@@ -1,4 +1,4 @@
-enum OPCODES {NOP, AND, LD};
+enum OPCODES {NOP, AND, LOAD, HALT, PRINT, PRNTA};
 char opcode;
 char data;
 
@@ -19,7 +19,30 @@ void fetchData(){
   print(", " + hex(regPC) + " = "  + hex(data));
   INCPC();
   data = char((data << 8) | mainRAM.contents[regPC]);
-  println(", " + hex(regPC) + " = "  + hex(data));
+  println(", " + hex(regPC) + " = "  + hex(char(data & 0x00FF)));
+  INCPC();
+  setRegister(data);
+}
+
+void fetchDataAddress(){
+  char tempx = regX;
+  register = REGISTERS.values()[0];
+  data = mainRAM.contents[regX];
+  print("FDA: " + hex(regX) + " = "  + hex(data));
+  if(regX >= 65535){tempx = 0;}else{tempx++;}
+  data = char((data << 8) | mainRAM.contents[tempx]);
+  println(", " + hex(regPC) + " = "  + hex(char(data & 0x00FF)));
+  setRegister(data);
+}
+
+void fetchAddress(){
+  register = REGISTERS.values()[9];
+  print("Address: ");
+  data = mainRAM.contents[regPC];
+  print(hex(regPC) + " = "  + hex(data));
+  INCPC();
+  data = char((data << 8) | mainRAM.contents[regPC]);
+  println(", " + hex(regPC) + " = "  + hex(char(data & 0x00FF)));
   INCPC();
   setRegister(data);
 }
@@ -33,7 +56,7 @@ char fetchRegister(){
 
 void setRegister(char a){
   print("SR: ");
-  print(hex(a));
+  //print(hex(a));
   switch(register){
     case regA:
       regA = a;
@@ -69,7 +92,7 @@ void setRegister(char a){
       regY = a;
       break;
   }
-  println(", " + hex(returnRegister()));
+  println(register + ": " + hex(returnRegister()));
 }
 
 char returnRegister(){
@@ -127,8 +150,22 @@ void decodeOpcode(){
       //println("regA: " + hex(regA) + " AND " + hex(returnRegister()));
       break;
       
-    case LD:
+    case LOAD:
       fetchData();
+      break;
+    
+    case HALT:
+      CPUHalt = true;
+      break;
+    
+    case PRINT:
+      println(register + ":" + hex(fetchRegister()));
+      break;
+    
+    case PRNTA:
+      fetchAddress();
+      fetchDataAddress();
+      println("Address: " + hex(regX) + ", Data: " + hex(regA));
       break;
   }
 }

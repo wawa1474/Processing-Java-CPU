@@ -6,14 +6,6 @@ class RAM{//RAM
   }
 }
 
-class ROM{//ROM
-  char contents[];
-  
-  public ROM(char contents[]){
-    this.contents = contents;
-  }
-}
-
 int regPC;//Program Counter
 char regA, regF;//Accumulator, Flags?
 char regB, regC;//Registers B & C

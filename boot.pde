@@ -1,13 +1,14 @@
+int programLength;
+
 void hardReset(){
   byte b[] = loadBytes("bootCode.bin");
-  char bootCode[] = new char[b.length];
+  programLength = b.length;
   
-  for(int i = 0; i < b.length; i++){
-    bootCode[i] = char(b[i] & 0xFF);
-  }
-  
-  bootROM = new ROM(bootCode);
   mainRAM = new RAM(RAMSize);
+  
+  for(int i = 0; i < programLength; i++){
+    mainRAM.contents[i] = char(b[i] & 0xFF);
+  }
   
   resetRegisters();
   
