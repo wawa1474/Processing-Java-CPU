@@ -25,8 +25,8 @@ String registerNames[] = {"regA", "regF",
                           "regI",
                           "regX", "regY"};
   
-void INCPC(){this.regPC++;}
-void DECPC(){this.regPC--;}
+void INCPC(){regPC++; if(regPC >= RAMSize){regPC = 0;}}
+void DECPC(){if(regPC <= 0){regPC = RAMSize;} regPC--;}
 
 void resetRegisters(){
   regPC = 0;//Program Counter

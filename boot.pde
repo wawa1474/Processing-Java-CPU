@@ -5,9 +5,11 @@ void hardReset(){
   programLength = b.length;
   
   mainRAM = new RAM(RAMSize);
-  
-  for(int i = 0; i < programLength; i++){
-    mainRAM.contents[i] = char(b[i] & 0xFF);
+  int j = 0;
+  for(int i = 0; i < programLength; i+=2){
+    mainRAM.contents[j] = char(b[i] & 0xFF);
+    mainRAM.contents[j] = char((mainRAM.contents[j] << 8) | (b[i+1] & 0xFF));
+    j++;
   }
   
   resetRegisters();

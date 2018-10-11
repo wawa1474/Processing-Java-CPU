@@ -5,32 +5,25 @@ char data;
 int register;
 
 void fetchOpcode(){
-  opcode = mainRAM.contents[regPC];
+  opcode = char(mainRAM.contents[regPC] >> 8);
+  data = char(mainRAM.contents[regPC] & 0xFF);
   println("FO: " + hex(regPC) + " = " + hex(opcode));
   INCPC();
 }
 
 void fetchData(){
-  register = int(mainRAM.contents[regPC]);
-  print("FD: " + hex(regPC) + " = " + registerNames[register]);
-  INCPC();
+  register = data;
+  print("FD: " + "REG = " + registerNames[register]);
   data = mainRAM.contents[regPC];
-  print(", " + hex(regPC) + " = "  + hex(data));
-  INCPC();
-  data = char((data << 8) | mainRAM.contents[regPC]);
-  println(", " + hex(regPC) + " = "  + hex(char(data & 0x00FF)));
+  println(", " + hex(regPC) + " = "  + hex(data));
   INCPC();
   setRegister(data);
 }
 
 void fetchDataAddress(){
-  char tempx = char(registers[regX]);
   register = regA;
   data = mainRAM.contents[registers[regX]];
-  print("FDA: " + hex(registers[regX]) + " = "  + hex(data));
-  if(registers[regX] >= 65535){tempx = 0;}else{tempx++;}
-  data = char((data << 8) | mainRAM.contents[tempx]);
-  println(", " + hex(regPC) + " = "  + hex(char(data & 0x00FF)));
+  println("FDA: " + hex(registers[regX]) + " = "  + hex(data));
   setRegister(data);
 }
 
@@ -38,18 +31,14 @@ void fetchAddress(){
   register = regX;
   print("Address: ");
   data = mainRAM.contents[regPC];
-  print(hex(regPC) + " = "  + hex(data));
-  INCPC();
-  data = char((data << 8) | mainRAM.contents[regPC]);
-  println(", " + hex(regPC) + " = "  + hex(char(data & 0x00FF)));
+  println(hex(regPC) + " = "  + hex(data));
   INCPC();
   setRegister(data);
 }
 
 char fetchRegister(){
-  register = int(mainRAM.contents[regPC]);
+  register = data;
   println("FR: " + registerNames[register]);
-  INCPC();
   return registers[register];
 }
 

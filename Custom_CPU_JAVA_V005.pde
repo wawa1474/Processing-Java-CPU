@@ -9,7 +9,7 @@ void setup(){
   hardReset();
   print("bootCode: ");
   for(int i = 0; i < programLength; i++){
-    print(mainRAM.contents[i] & 0xFF);
+    print(hex(mainRAM.contents[i]));
     if(i < programLength - 1){print(", ");}
   }
   println();println();

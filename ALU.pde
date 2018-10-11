@@ -9,7 +9,7 @@ void XNOR(char a, char b){//Exclusive Not OR
 }
 
 void AND(char a, char b){//And
-  println("regA = " + hex(a) + " & " + registerNames[register] + ": " + hex(b));
+  println("regA: " + hex(a) + " & " + registerNames[register] + ": " + hex(b));
   registers[regA] = char(a&b);
 }
 
