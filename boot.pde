@@ -12,6 +12,10 @@ void hardReset(){
     j++;
   }
   
+  for(int i = programLength/2; i < RAMSize; i++){
+    mainRAM.contents[i] = char(int(random(0, 65536)));
+  }
+  
   regPC = 0;
   regST = 0;
   regWP = 0xFFF0;

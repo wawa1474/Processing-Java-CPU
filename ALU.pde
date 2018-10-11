@@ -33,12 +33,61 @@ void NOT(char a){
   mainRAM.contents[regWP] = char(a^0xFFFF);
 }
 
+void INC(char reg){
+  mainRAM.contents[regWP + reg]++;
+}
+
 void ADD(char a, char b){//ADDition
-  println("ADD");
+  //println("ADD");
   mainRAM.contents[regWP] = char(a+b);
+  if(int(a + b) > 65535){
+    regST |= 0x0001;
+    //print("Carry!");
+  }else{
+    regST &= 0xFFFE;
+  }
+  if(mainRAM.contents[regWP] == 0){
+    regST |= 0x0002;
+    //print("Zero!");
+  }else{
+    regST &= 0xFFFD;
+  }
 }
 
 void SUB(char a, char b){//SUBtraction
   println("SUB");
   mainRAM.contents[regWP] = char(a-b);
+  if(int(a - b) < 0){
+    regST |= 0x0004;
+    //print("Negative!");
+  }else{
+    regST &= 0xFFFB;
+  }
+  if(mainRAM.contents[regWP] == 0){
+    regST |= 0x0002;
+    //print("Zero!");
+  }else{
+    regST &= 0xFFFD;
+  }
+}
+
+void COMPARE(char a, char b){//Compare
+  if(int(a + b) > 65535){
+    regST |= 0x0001;
+    //print("Carry!");
+  }else{
+    regST &= 0xFFFE;
+  }
+  if(int(a - b) < 0){
+    regST |= 0x0004;
+    //print("Negative!");
+  }else{
+    regST &= 0xFFFB;
+  }
+  if(int(a - b) == 0){
+    regST |= 0x0002;
+    //print("Zero!");
+  }else{
+    regST &= 0xFFFD;
+  }
 }

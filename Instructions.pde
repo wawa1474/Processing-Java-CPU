@@ -1,4 +1,3 @@
-enum OPCODES {NOP, AND, LOAD, HALT, PRINT, PRNTA};
 char opcode;
 char data;
 
@@ -8,7 +7,7 @@ void fetchOpcode(){
   opcode = char(mainRAM.contents[regPC] >> 8);
   data = char(mainRAM.contents[regPC] & 0xFF);
   println("FO: " + hex(regPC) + " = " + hex(opcode));
-  INCPC();
+  incPC();
 }
 
 void fetchData(){
@@ -16,8 +15,21 @@ void fetchData(){
   print("FD: " + "reg = " + register);
   data = mainRAM.contents[regPC];
   println(", " + hex(regPC) + " = "  + hex(data));
-  INCPC();
+  incPC();
   setRegister(data);
+}
+
+void storeData(){
+  print("SD: " + "Address = " + hex(mainRAM.contents[regPC]));
+  mainRAM.contents[regPC] = mainRAM.contents[regWP + data];
+  println(", " + "Data = "  + hex(mainRAM.contents[regWP + data]));
+  incPC();
+}
+
+void storeRegister(){
+  print("SR: " + "Address = " + hex(mainRAM.contents[regWP + 0x0F]));
+  mainRAM.contents[mainRAM.contents[regWP + 0x0F]] = mainRAM.contents[regWP + data];
+  println(", " + "Register = "  + hex(mainRAM.contents[regWP + data]));
 }
 
 void fetchDataAddress(){
@@ -32,7 +44,7 @@ void fetchAddress(){
   print("Address: ");
   data = mainRAM.contents[regPC];
   println(hex(regPC) + " = "  + hex(data));
-  INCPC();
+  incPC();
   setRegister(data);
 }
 
@@ -50,13 +62,13 @@ void setRegister(char a){
 }
 
 void decodeOpcode(){
-  OPCODES decode = OPCODES.values()[opcode];
-  println("DO: " + decode);
+  println("DO: " + opcodeDNames[opcode]);
   char tmp;
-  switch(decode){
-    case NOP:
+  switch(opcode){
+    case SINGLES:
+      decodeSingles();
       break;
-    
+      
     case AND:
       //print(regA);
       AND(mainRAM.contents[regWP], fetchRegister());
@@ -65,10 +77,6 @@ void decodeOpcode(){
       
     case LOAD:
       fetchData();
-      break;
-    
-    case HALT:
-      CPUHalt = true;
       break;
     
     case PRINT:
@@ -80,6 +88,86 @@ void decodeOpcode(){
       fetchAddress();
       fetchDataAddress();
       println("Address: " + hex(mainRAM.contents[regWP + 0x0F]) + ", Data: " + hex(mainRAM.contents[regWP]));
+      break;
+      
+    case ADD:
+      print("reg " + hex(((data >> 4) & 0x07)) + ": " + hex(mainRAM.contents[regWP + ((data >> 4) & 0x07)]) + " + " + "reg " + hex((data & 0x07)) + ": " + hex(mainRAM.contents[regWP + (data & 0x07)]));
+      ADD(mainRAM.contents[regWP + ((data >> 4) & 0x07)], mainRAM.contents[regWP + (data & 0x07)]);
+      println(" = reg " + hex(0) + ": " + hex(mainRAM.contents[regWP]));
+      break;
+    
+    case COPY:
+      mainRAM.contents[regWP + (data & 0x07)] = mainRAM.contents[regWP + ((data >> 4) & 0x07)];
+      println("reg " + hex(((data >> 4) & 0x07)) + ": " + hex(mainRAM.contents[regWP + ((data >> 4) & 0x07)]) + " -> " + "reg " + hex(data& 0x07) + ": " + hex(mainRAM.contents[regWP + (data& 0x07)]));
+      break;
+    
+    case INSC:
+      instructionCount = data + 1;
+      break;
+    
+    case INSM:
+      instructionMultiplyer = data + 1;
+      break;
+    
+    case INSD:
+      instructionDelay = data;
+      break;
+    
+    case COMPARE:
+      COMPARE(mainRAM.contents[regWP + (data & 0x07)], mainRAM.contents[regWP + ((data >> 4) & 0x07)]);
+      break;
+    
+    case STORE:
+      storeData();
+      break;
+    
+    case STOREREG:
+      storeRegister();
+      break;
+    
+    case INC:
+      INC(data);
+      break;
+  }
+}
+
+void decodeSingles(){
+  println("DS: " + opcodeSNames[data]);
+  char tmp;
+  switch(data){
+    case NOP:
+      break;
+    
+    case HALT:
+      CPUHalt = true;
+      break;
+    
+    case JUMPCARRY:
+      if((regST & 0x0001) == 0x0001){
+        println("Carry: Jump -> " + hex(mainRAM.contents[regPC]));
+        regPC = mainRAM.contents[regPC];
+        break;
+      }
+      incPC();
+      break;
+    
+    case JUMP:
+      println("Jump -> " + hex(mainRAM.contents[regPC]));
+      regPC = mainRAM.contents[regPC];
+      break;
+    
+    case JUMPNCARRY:
+      if((regST & 0x0001) != 0x0001){
+        println("Not Carry: Jump -> " + hex(mainRAM.contents[regPC]));
+        regPC = mainRAM.contents[regPC];
+        break;
+      }
+      incPC();
+      break;
+    
+    case COMPAREIMM:
+      COMPARE(mainRAM.contents[regWP], mainRAM.contents[regPC]);
+      incPC();
       break;
   }
 }
