@@ -12,22 +12,33 @@ void hardReset(){
     j++;
   }
   
-  for(int i = programLength/2; i < RAMSize; i++){
-    mainRAM.contents[i] = char(int(random(0, 65536)));
+  for(int i = programLength/2; i < RAMSize; i++){// - 0x0F; i++){
+    //mainRAM.contents[i] = char(int(random(0, 65536)));
+  }
+  
+  videoRAM = new RAM(VRAMSize);
+  for(int i = 0; i < VRAMSize; i++){
+    videoRAM.contents[i] = char(int(random(0, 65536)));
   }
   
   regPC = 0;
   regST = 0;
   regWP = 0xFFF0;
   
-  stack = new char[STKSize];
+  mainRAM.contents[regWP + 0x0F] = char(int(random(0,65536)));
+  
+  stack = new int[STKSize];
   regSP = 0;
+  
+  instructions = 0;
 }
 
 void softReset(){
   regPC = 0;
   regST = 0;
   regWP = 0xFFF0;
+  
+  instructions = 0;
 }
 
 void Error(String error){
