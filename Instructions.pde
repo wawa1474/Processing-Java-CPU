@@ -13,7 +13,7 @@ void fetchOpcode(){
 
 void fetchData(){
   register = data;
-  print("FD: " + "REG = " + registerNames[register]);
+  print("FD: " + "reg = " + register);
   data = mainRAM.contents[regPC];
   println(", " + hex(regPC) + " = "  + hex(data));
   INCPC();
@@ -21,14 +21,14 @@ void fetchData(){
 }
 
 void fetchDataAddress(){
-  register = regA;
-  data = mainRAM.contents[registers[regX]];
-  println("FDA: " + hex(registers[regX]) + " = "  + hex(data));
+  register = 0;
+  data = mainRAM.contents[mainRAM.contents[regWP + 0x0F]];
+  println("FDA: " + hex(mainRAM.contents[regWP + 0x0F]) + " = "  + hex(data));
   setRegister(data);
 }
 
 void fetchAddress(){
-  register = regX;
+  register = 0x0F;
   print("Address: ");
   data = mainRAM.contents[regPC];
   println(hex(regPC) + " = "  + hex(data));
@@ -38,15 +38,15 @@ void fetchAddress(){
 
 char fetchRegister(){
   register = data;
-  println("FR: " + registerNames[register]);
-  return registers[register];
+  println("FR: " + register);
+  return mainRAM.contents[regWP + register];
 }
 
 void setRegister(char a){
   print("SR: ");
   //print(hex(a));
-  registers[register] = a;
-  println(registerNames[register] + ": " + hex(registers[register]));
+  mainRAM.contents[regWP + register] = a;
+  println("reg " + register + ": " + hex(mainRAM.contents[regWP + register]));
 }
 
 void decodeOpcode(){
@@ -59,7 +59,7 @@ void decodeOpcode(){
     
     case AND:
       //print(regA);
-      AND(registers[regA], fetchRegister());
+      AND(mainRAM.contents[regWP], fetchRegister());
       //println("regA: " + hex(regA) + " AND " + hex(returnRegister()));
       break;
       
@@ -73,13 +73,13 @@ void decodeOpcode(){
     
     case PRINT:
       tmp = fetchRegister();
-      println(registerNames[register] + ":" + hex(tmp));
+      println("reg " + register + ":" + hex(tmp));
       break;
     
     case PRNTA:
       fetchAddress();
       fetchDataAddress();
-      println("Address: " + hex(registers[regX]) + ", Data: " + hex(registers[regA]));
+      println("Address: " + hex(mainRAM.contents[regWP + 0x0F]) + ", Data: " + hex(mainRAM.contents[regWP]));
       break;
   }
 }

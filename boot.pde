@@ -12,14 +12,18 @@ void hardReset(){
     j++;
   }
   
-  resetRegisters();
+  regPC = 0;
+  regST = 0;
+  regWP = 0xFFF0;
   
   stack = new char[STKSize];
   regSP = 0;
 }
 
 void softReset(){
-  resetRegisters();
+  regPC = 0;
+  regST = 0;
+  regWP = 0xFFF0;
 }
 
 void Error(String error){

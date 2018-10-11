@@ -8,9 +8,9 @@ void setup(){
   size(960, 540);
   hardReset();
   print("bootCode: ");
-  for(int i = 0; i < programLength; i++){
+  for(int i = 0; i < programLength / 2; i++){
     print(hex(mainRAM.contents[i]));
-    if(i < programLength - 1){print(", ");}
+    if(i < programLength / 2 - 1){print(", ");}
   }
   println();println();
   
