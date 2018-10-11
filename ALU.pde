@@ -1,38 +1,44 @@
-char XOR(char a, char b){//Exclusive OR
-  return char(a^b);
+void XOR(char a, char b){//Exclusive OR
+  println("XOR");
+  regA = char(a^b);
 }
 
-char XNOR(char a, char b){//Exclusive Not OR
-  //return char((a^b)^0xFF);
-  return NOT(char(a^b));
+void XNOR(char a, char b){//Exclusive Not OR
+  println("XNOR");
+  regA = char((a^b)^0xFFFF);
 }
 
-char AND(char a, char b){//And
-  return char(a&b);
+void AND(char a, char b){//And
+  println("regA = " + hex(a) + " & " + register + ": " + hex(b));
+  regA = char(a&b);
 }
 
-char NAND(char a, char b){//Not AND
-  //return char((a&b)^0xFF);
-  return NOT(char(a&b));
+void NAND(char a, char b){//Not AND
+  println("NAND");
+  regA = char((a&b)^0xFFFF);
 }
 
-char OR(char a, char b){//OR
-  return char(a|b);
+void OR(char a, char b){//OR
+  println("OR");
+  regA = char(a|b);
 }
 
-char NOR(char a, char b){//Not OR
-  //return char((a|b)^0xFF);
-  return NOT(char(a|b));
+void NOR(char a, char b){//Not OR
+  println("NOR");
+  regA = char((a|b)^0xFFFF);
 }
 
-char NOT(char a){//NOT
-  return char(a^0xFF);
+void NOT(char a){
+  println("NOT");
+  regA = char(a^0xFFFF);
 }
 
-char ADD(char a, char b){//ADDition
-  return char(a+b);
+void ADD(char a, char b){//ADDition
+  println("ADD");
+  regA = char(a+b);
 }
 
-char SUB(char a, char b){//SUBtraction
-  return char(a-b);
+void SUB(char a, char b){//SUBtraction
+  println("SUB");
+  regA = char(a-b);
 }

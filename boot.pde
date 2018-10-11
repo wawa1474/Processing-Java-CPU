@@ -6,12 +6,20 @@ void hardReset(){
     bootCode[i] = char(b[i] & 0xFF);
   }
   
-  bootROM = new ROM(bootCode.length, bootCode);
+  bootROM = new ROM(bootCode);
   mainRAM = new RAM(RAMSize);
-  mainREG = new REG();
-  mainSTK = new STK(STKSize);
+  
+  resetRegisters();
+  
+  stack = new char[STKSize];
+  regSP = 0;
 }
 
 void softReset(){
-  mainREG = new REG();
+  resetRegisters();
+}
+
+void Error(String error){
+  println(error);
+  CPUHalt = true;
 }

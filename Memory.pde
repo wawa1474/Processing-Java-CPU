@@ -1,67 +1,56 @@
 class RAM{//RAM
-  int size;
   char contents[];
   
   public RAM(int size){
-    this.size = size;
+    contents = new char[size];
   }
 }
 
 class ROM{//ROM
-  int size;
   char contents[];
   
-  public ROM(int size, char contents[]){
-    this.size = size;
+  public ROM(char contents[]){
     this.contents = contents;
   }
 }
 
-class REG{//Registers
-  int regPC;//Program Counter
-  char regA, regF;//Accumulator, Flags?
-  char regB, regC;//Registers B & C
-  char regD, regE;//Registers D & E
-  char regH, regL;//Registers H & L
-  char regI;//Interrupt Vector
-  char regX, regY;//Index X, Index Y
-  boolean flagC, flagZ;//Carry, Zero
-  boolean flagO, flagN;//Overflow, Negative
-  boolean flagS, flagP;//Sign, Parity
+int regPC;//Program Counter
+char regA, regF;//Accumulator, Flags?
+char regB, regC;//Registers B & C
+char regD, regE;//Registers D & E
+char regH, regL;//Registers H & L
+char regI;//Interrupt Vector
+char regX, regY;//Index X, Index Y
+boolean flagC, flagZ;//Carry, Zero
+boolean flagO, flagN;//Overflow, Negative
+boolean flagS, flagP;//Sign, Parity
   
-  public REG(){
-    this.regPC = 0;
-    this.regA = 0; this.regF = 0;
-    this.regB = 0; this.regC = 0;
-    this.regD = 0; this.regE = 0;
-    this.regH = 0; this.regL = 0;
-    this.regI = 0; this.regX = 0; this.regY = 0;
-    this.flagC = false; this.flagZ = false;
-    this.flagO = false; this.flagN = false;
-    this.flagS = false; this.flagP = false;
-  }
-  
-  void INCPC(){this.regPC++;}
-  void DECPC(){this.regPC--;}
+void INCPC(){this.regPC++;}
+void DECPC(){this.regPC--;}
+
+void resetRegisters(){
+  regPC = 0;//Program Counter
+  regA = 0; regF = 0;//Accumulator, Flags?
+  regB = 0; regC = 0;//Registers B & C
+  regD = 0; regE = 0;//Registers D & E
+  regH = 0; regL = 0;//Registers H & L
+  regI = 0;//Interrupt Vector
+  regX = 0; regY = 0;//Index X, Index Y
+  flagC = false; flagZ = false;//Carry, Zero
+  flagO = false; flagN = false;//Overflow, Negative
+  flagS = false; flagP = false;//Sign, Parity
 }
 
-class STK{//Stack
-  int regSP;
-  char stack[];
+
+int regSP = 0;
+char stack[] = new char[STKSize];
   
-  public STK(int size){
-    this.regSP = 0;
-    stack = new char[size];
-  }
+void push(char c){
+  stack[regSP] = c;
+  this.regSP++;
+}
   
-  void push(char c){
-    stack[regSP] = c;
-    this.regSP++;
-  }
-  
-  char pop(){
-    this.regSP--;
-    return stack[regSP];
-  }
-  
+char pop(){
+  this.regSP--;
+  return stack[regSP];
 }
