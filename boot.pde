@@ -31,6 +31,9 @@ void hardReset(){
   regSP = 0;
   
   instructions = 0;
+  
+  programMillis = millis();
+  programFrames = frameCount;
 }
 
 void softReset(){

@@ -4,9 +4,12 @@ int STKSize = 256;
 
 RAM videoRAM;
 int VRAMSize = 65536;
-int instructionCount = 0xFF;//FF
-int instructionMultiplyer = 0x07;//07
+int instructionCount = 0x01;//FF
+int instructionMultiplyer = 0x01;//07
 int instructionDelay = 0;
+int delayCount = 0;
+int programMillis = 0;
+int programFrames = 0;
 
 boolean CPUHalt = false;
 
@@ -39,13 +42,17 @@ void setup(){
 
 void draw(){
   //noLoop();
-  for(int i = 0; i < instructionCount * instructionMultiplyer; i++){
-    fetchOpcode();
-    decodeOpcode();
-    if(CPUHalt == true){i = instructionCount * instructionMultiplyer; noLoop(); println("CPU Halted!"); println(millis() + " Ms, " + frameCount + " Frames");}
-    delay(instructionDelay);
-    instructions++;
+  if(delayCount >= instructionDelay / frameRate && !CPUHalt){
+    for(int i = 0; i < instructionCount * instructionMultiplyer; i++){
+      fetchOpcode();
+      decodeOpcode();
+      if(CPUHalt == true){i = instructionCount * instructionMultiplyer; /*noLoop();*/ println("CPU Halted!"); println((millis() - programMillis) + " Ms, " + (frameCount - programFrames) + " Frames");}
+      instructions++;
+    }
+    delayCount = 0;
   }
+  if(instructionDelay != 0){delayCount++;}// delay(1);}
+  
   //instructions++;
   background(0);
   /*strokeWeight(3);
@@ -120,7 +127,7 @@ void draw(){
   
   //blend(screen, 0, 0, 256, 256, 0, 0, 768, 768, BLEND);
   //frame.setTitle("Instruction: " + str(instructions) + ", FPS: " + str(frameRate));
-  surface.setTitle("Instruction: " + str(instructions) + ", FPS: " + str(floor(frameRate)) + ", TEST: " + hex(mainRAM.contents[regWP]));
+  surface.setTitle("Instruction: " + str(instructions) + ", FPS: " + str(floor(frameRate)) + ", iC: " + instructionCount + ", iM: " + instructionMultiplyer + ", iD: " + instructionDelay);//hex(mainRAM.contents[regWP]));
   //text(frames, 300,100);
   //text(frameRate, 300,150);
 }
@@ -130,17 +137,41 @@ void keyPressed(){
   //println((int)key, keyCode);
   if(keyCode == 10 && CPUHalt == true){//Enter
     CPUHalt = false;
-    loop();
+    //loop();
     hardReset();
   }
   
   if((int)key == 18 && keyCode == 82){//CTRL + R
     CPUHalt = false;
-    loop();
+    //loop();
     hardReset();
   }
 }
 
 void keyTyped(){
+  //int instructionCount = 0x01;//FF
+  //int instructionMultiplyer = 0x01;//07
+  //int instructionDelay = 0;
   //println(key);
+  if(key == 'w'){
+    instructionCount++;
+  }
+  if(key == 's'){
+    instructionCount--;
+    if(instructionCount <= 1){instructionCount = 1;}
+  }
+  if(key == 'e'){
+    instructionMultiplyer++;
+  }
+  if(key == 'd'){
+    instructionMultiplyer--;
+    if(instructionMultiplyer <= 1){instructionMultiplyer = 1;}
+  }
+  if(key == 'r'){
+    instructionDelay++;
+  }
+  if(key == 'f'){
+    instructionDelay--;
+    if(instructionDelay <= 0){instructionDelay = 0;}
+  }
 }

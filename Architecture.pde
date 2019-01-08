@@ -25,6 +25,11 @@ Addressing Modes
   Relative
 
 CPU Information
+  supported opcodes
+  included hardware
+  cpu version
+  mmu type
+  ...
 
 Nop
 Halt
