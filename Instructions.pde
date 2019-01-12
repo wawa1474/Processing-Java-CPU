@@ -26,7 +26,23 @@ void storeData(){
   incPC();
 }
 
+void loadData(){
+  //print("LD: " + "Address = " + hex(mainRAM.contents[regWP + (data & 0x0F)]));
+  //print(", " + "'Data' = " + hex(data));
+  //print(", " + "Data = "  + hex(mainRAM.contents[mainRAM.contents[regWP + (data & 0x0F)]]));
+  //print(", " + "Register0 = "  + hex(((data >> 4) & 0x0F)));
+  //println(", " + "Register1 = "  + hex(data & 0x0F));
+  mainRAM.contents[regWP + ((data >> 4) & 0x0F)] = mainRAM.contents[mainRAM.contents[regWP + (data & 0x0F)]];
+  //incPC();
+}
+
 void storeRegister(){
+  //print("SR: " + "Address = " + hex(mainRAM.contents[regWP + 0x0F]));
+  mainRAM.contents[mainRAM.contents[regWP + 0x0F]] = mainRAM.contents[regWP + data];
+  //println(", " + "Register = "  + hex(mainRAM.contents[regWP + data]));
+}
+
+void loadRegister(){//need to rewrit reto work
   //print("SR: " + "Address = " + hex(mainRAM.contents[regWP + 0x0F]));
   mainRAM.contents[mainRAM.contents[regWP + 0x0F]] = mainRAM.contents[regWP + data];
   //println(", " + "Register = "  + hex(mainRAM.contents[regWP + data]));
@@ -145,6 +161,10 @@ void decodeOpcode(){
     
     case ZERO:
       mainRAM.contents[regWP + (data & 0x0F)] = 0;
+      break;
+    
+    case LOADDATA:
+      loadData();
       break;
   }
 }

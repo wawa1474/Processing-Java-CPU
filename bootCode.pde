@@ -87,11 +87,11 @@ halt
 
 
 /*
-display test ?
+display test 8
 -------------------sudo code-------------
 zero reg[F]
 loop:
-store pixel reg[F]
+pixel reg[F]
 increment reg[F]
 jump not carry :loop
 halt
@@ -101,4 +101,93 @@ halt
 0D0F
 0004 0001
 0001
+*/
+
+
+/*
+display image test 1
+-------------sudo sudo code------------
+f = 10,10
+(0) = imagestart
+c = imagestart + 64
+loadb:
+b = 8
+for(b != 0; b--){
+  load [(0)] -> e
+  pixel e
+  inc (0)
+  inc f
+  if((0) = c){halt}
+}
+f += 248
+jump loadb
+-------------sudo code----------
+load reg[2] 248
+load reg[F] 256 * 10 + 10
+load reg[0] :imageStart
+load reg[C] :imageStart + 64
+loadB:
+load reg[B] 8
+loop:
+load reg[E] mem[0]
+pixel reg[E]
+inc [0]
+inc [F]
+compare [0] [C]
+jump equal :end
+dec [B]
+jump not zero :loop
+copy 0 1
+copy f 0
+add 2 0
+copy 0 f
+copy 1 0
+jump :loadB
+end:
+halt?
+
+imageStart:
+FF00 FF00 FF00 0000 FF00 0000 0000 0000
+FF00 0000 FF00 0000 FF00 0000 0000 0000
+FF00 0000 0000 0000 FF00 0000 0000 0000
+FF00 FF00 FF00 FF00 FF00 0000 0000 0000
+FF00 FF00 0000 0000 0000 0000 0000 0000
+0000 FF00 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+
+-------------------hex---------------
+0202 00F8
+020F 0A0A
+0200 :imagestart
+020C :imagestart + 64
+loadB:
+020B 0008
+loop:
+110E
+0F0E
+0D00
+0D0F
+0AC0
+0006 :end
+0E0B
+0007 :loop
+0601
+06f0
+05f0
+060f
+0610
+050F 0100
+0003 :loadB
+end:
+0001?
+imageStart:
+FF00 FF00 FF00 0000 FF00 0000 0000 0000
+FF00 0000 FF00 0000 FF00 0000 0000 0000
+FF00 0000 0000 0000 FF00 0000 0000 0000
+FF00 FF00 FF00 FF00 FF00 0000 0000 0000
+FF00 FF00 0000 0000 0000 0000 0000 0000
+0000 FF00 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
 */
