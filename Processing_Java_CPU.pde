@@ -1,9 +1,20 @@
+color screen_Green = color(0,255,0);
+color screen_Amber = #FFCC00;
+color screen_Black = color(0);
+
+
 RAM mainRAM;
 int RAMSize = 65536;
 int STKSize = 256;
 
 RAM videoRAM;
 int VRAMSize = 65536;
+int screenType = 0;
+boolean invertScreen = false;
+color screenForegroundColor = screen_Amber;
+color screenBackgroundColor = screen_Black;
+
+
 int instructionCount = 0x01;//FF
 int instructionMultiplyer = 0x01;//07
 int instructionDelay = 0;
@@ -19,10 +30,6 @@ int instructions = 0;
 PImage screen = createImage(768,768,RGB);
 //PImage memory = createImage(256,256,RGB);
 PImage memory = createImage(768,768,RGB);
-
-color screen_Green = color(0,255,0);
-color screen_Amber = #FFCC00;
-color screen_Black = color(0);
 
 void setup(){
   size(1552, 768);
@@ -55,61 +62,26 @@ void draw(){
   
   //instructions++;
   background(0);
-  /*strokeWeight(3);
-  screen.loadPixels();
-  for(int y = 0; y < 256; y++){
-    for(int x = 0; x < 256; x++){
-      //stroke((mainRAM.contents[(y * 256) + x] >> 8) & 0xFF, mainRAM.contents[(y * 256) + x] & 0xFF, 0);
-      //point(x * 3 + 2, y * 3 + 2);
-      //screen.pixels[(y * 256) + x] = color((mainRAM.contents[(y * 256) + x] >> 8) & 0xFF, mainRAM.contents[(y * 256) + x] & 0xFF, 0);
-      screen.pixels[(y * 256) + x] = color(((videoRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, videoRAM.contents[(y * 256) + x] & 0xFF, ((videoRAM.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
-    }
-  }
-  screen.updatePixels();
-  screen.resize(768,768);
-  image(screen,0,0);
-  screen.resize(256,256);*/
-  
-  screen.loadPixels();
-  for(int y = 0; y < 256; y++){
-    for(int x = 0; x < 256; x++){
-      for(int y2 = 0; y2 < 3; y2++){
-        for(int x2 = 0; x2 < 3; x2++){
-          screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = color(((videoRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, videoRAM.contents[(y * 256) + x] & 0xFF, ((videoRAM.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
-          //screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = color(((videoRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, (videoRAM.contents[(y * 256) + x] >> 4) & 0xFF, ((videoRAM.contents[(y * 256) + x]) & 0x0F) * 16);
-          //screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = color(((videoRAM.contents[(y * 256) + x] >> 11) & 0x1F) * 8, (videoRAM.contents[(y * 256) + x] & 0x3F) * 4, ((videoRAM.contents[(y * 256) + x] >> 6) & 0x1F) * 8);
-          //screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = color(((videoRAM.contents[(y * 256) + x] >> 11) & 0x1F) * 8, ((videoRAM.contents[(y * 256) + x] >> 5) & 0x3F) * 4, ((videoRAM.contents[(y * 256) + x]) & 0x1F) * 8);
-          //screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = color(((videoRAM.contents[(y * 256) + x] >> 6) & 0x03) * 64, ((videoRAM.contents[(y * 256) + x] >> 2) & 0x0F) * 16, ((videoRAM.contents[(y * 256) + x]) & 0x03) * 64);
-          /*if((videoRAM.contents[(y * 256) + x] & 0x01) == 0x01){
-            screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = screen_Amber;
-          }else{
-            screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = screen_Black;
-          }*/
-        }
-      }
-    }
-  }
-  screen.updatePixels();
-  image(screen,0,0);
+  drawScreen();
   
   strokeWeight(14);
   stroke(255);
   line(768 + 8, 0, 768 + 8, height);
   
-  /*strokeWeight(3);
-  memory.loadPixels();
-  for(int y = 0; y < 256; y++){
-    for(int x = 0; x < 256; x++){
-      //stroke((mainRAM.contents[(y * 256) + x] >> 8) & 0xFF, mainRAM.contents[(y * 256) + x] & 0xFF, 0);
-      //point(x * 3 + 2, y * 3 + 2);
-      //screen.pixels[(y * 256) + x] = color((mainRAM.contents[(y * 256) + x] >> 8) & 0xFF, mainRAM.contents[(y * 256) + x] & 0xFF, 0);
-      memory.pixels[(y * 256) + x] = color(((mainRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, mainRAM.contents[(y * 256) + x] & 0xFF, ((mainRAM.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
-    }
-  }
-  memory.updatePixels();
-  memory.resize(768,768);
-  image(memory,768 + 16,0);
-  memory.resize(256,256);*/
+  //strokeWeight(3);
+  //memory.loadPixels();
+  //for(int y = 0; y < 256; y++){
+  //  for(int x = 0; x < 256; x++){
+  //    //stroke((mainRAM.contents[(y * 256) + x] >> 8) & 0xFF, mainRAM.contents[(y * 256) + x] & 0xFF, 0);
+  //    //point(x * 3 + 2, y * 3 + 2);
+  //    //screen.pixels[(y * 256) + x] = color((mainRAM.contents[(y * 256) + x] >> 8) & 0xFF, mainRAM.contents[(y * 256) + x] & 0xFF, 0);
+  //    memory.pixels[(y * 256) + x] = color(((mainRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, mainRAM.contents[(y * 256) + x] & 0xFF, ((mainRAM.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
+  //  }
+  //}
+  //memory.updatePixels();
+  //memory.resize(768,768);
+  //image(memory,768 + 16,0);
+  //memory.resize(256,256);
   
   memory.loadPixels();
   for(int y = 0; y < 256; y++){
@@ -173,5 +145,25 @@ void keyTyped(){
   if(key == 'f'){
     instructionDelay--;
     if(instructionDelay <= 0){instructionDelay = 0;}
+  }
+  if(key == 't'){
+    screenType++;
+    if(screenType > 5){screenType = 5;}
+  }
+  if(key == 'g'){
+    screenType--;
+    if(screenType < 0){screenType = 0;}
+  }
+  if(key == 'i'){
+    color temp = screenForegroundColor;
+    screenForegroundColor = screenBackgroundColor;
+    screenBackgroundColor = temp;
+  }
+  if(key == 'k'){
+    //color temp = screenForegroundColor;
+    screenForegroundColor = screenForegroundColor ^ color(255);
+    screenBackgroundColor = screenBackgroundColor ^ color(255);
+    //temp = temp ^ color(255);
+    invertScreen = !invertScreen;
   }
 }

@@ -82,3 +82,23 @@ halt
 0004 0008
 0001
 */
+
+
+
+
+/*
+display test ?
+-------------------sudo code-------------
+zero reg[F]
+loop:
+store pixel reg[F]
+increment reg[F]
+jump not carry :loop
+halt
+------------------hex----------------
+100F
+0F0F
+0D0F
+0004 0001
+0001
+*/
