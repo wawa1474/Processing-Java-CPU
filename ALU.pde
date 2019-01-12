@@ -82,6 +82,23 @@ void ADD(char a, char b){//ADDition
   }
 }
 
+void ADDI(char reg, char imm){//ADDition
+  //println("ADD");
+  mainRAM.contents[regWP + (reg & 0x0F)] = char(mainRAM.contents[regWP + (reg & 0x0F)] + imm);
+  if(int(char(mainRAM.contents[regWP + (reg & 0x0F)] + imm)) > 65535){
+    regST |= 0x0001;
+    //print("Carry!");
+  }else{
+    regST &= 0xFFFE;
+  }
+  if(mainRAM.contents[regWP + (reg & 0x0F)] == 0){
+    regST |= 0x0002;
+    //print("Zero!");
+  }else{
+    regST &= 0xFFFD;
+  }
+}
+
 void SUB(char a, char b){//SUBtraction
   println("SUB");
   mainRAM.contents[regWP] = char(a-b);

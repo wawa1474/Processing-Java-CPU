@@ -17,6 +17,7 @@ static final int DEC = 14;//0E
 static final int STOREPIX = 15;//0F
 static final int ZERO = 16;//10
 static final int LOADDATA = 17;//11
+static final int ADDI = 18;//12
 
 //Singles
 static final int NOP = 0;//00

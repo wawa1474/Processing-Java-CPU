@@ -166,6 +166,13 @@ void decodeOpcode(){
     case LOADDATA:
       loadData();
       break;
+    
+    case ADDI:
+      //print("reg " + hex(((data >> 4) & 0x07)) + ": " + hex(mainRAM.contents[regWP + ((data >> 4) & 0x07)]) + " + " + "reg " + hex((data & 0x07)) + ": " + hex(mainRAM.contents[regWP + (data & 0x07)]));
+      ADDI(data, mainRAM.contents[regPC]);
+      //println(" = reg " + hex(0) + ": " + hex(mainRAM.contents[regWP]));
+      incPC();
+      break;
   }
 }
 
