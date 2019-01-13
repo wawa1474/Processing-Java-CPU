@@ -2,6 +2,8 @@ color screen_Green = color(0,255,0);
 color screen_Amber = #FFCC00;
 color screen_Black = color(0);
 
+boolean keys[] = new boolean[65536];
+
 
 RAM mainRAM;
 int RAMSize = 65536;
@@ -96,6 +98,15 @@ void draw(){
   memory.updatePixels();
   image(memory,768 + 16,0);
   
+  //if(keys['m']){
+  //  text("Hello M!",800,256);
+  //}
+  
+  //if((regST & 0x0001) != 0x0001){
+  //  text("Hello NC!",800,300);
+  //}
+  
+  //text(int(keys[int('m')]),800,350);
   
   //blend(screen, 0, 0, 256, 256, 0, 0, 768, 768, BLEND);
   //frame.setTitle("Instruction: " + str(instructions) + ", FPS: " + str(frameRate));
@@ -105,6 +116,10 @@ void draw(){
 }
 
 void keyPressed(){
+  //println(hex(key));
+  //println(int(key));
+  keys[key] = true;
+  
   //println(keyCode);
   //println((int)key, keyCode);
   if(keyCode == 10 && CPUHalt == true){//Enter
@@ -118,6 +133,10 @@ void keyPressed(){
     //loop();
     hardReset();
   }
+}
+
+void keyReleased(){
+  keys[key] = false;
 }
 
 void keyTyped(){

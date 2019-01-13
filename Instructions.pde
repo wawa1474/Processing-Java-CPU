@@ -320,5 +320,15 @@ void decodeSingles(){
     case BRANCHRETURN:
       regPC = pop();
       break;
+    
+    case KEYINPUT:
+      if(keys[mainRAM.contents[regPC]] == true){
+        regST |= 0x0002;//set zero flag
+        //println(int(mainRAM.contents[regPC]));
+      }else{
+        regST &= 0xFFFD;//clear zero flag
+      }
+      incPC();
+      break;
   }
 }

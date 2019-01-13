@@ -1,3 +1,39 @@
+/*
+keyboard test 1
+------------sudo code----------
+f = 0
+start:
+if(key == m){
+  for(f + 1 != 0; f++){
+    pixel f
+  }
+  halt
+}
+jump :start
+
+------------asm code------------
+start:
+if key m set zero flag
+jump if not zero :start
+zero reg[F]
+loop:
+pixel reg[F]
+increment reg[F]
+jump not carry :loop
+halt
+
+------------hex code--------------
+1300 006D
+0007 0000
+100F
+0F0F
+0D0F
+0004 0005
+0001
+*/
+
+
+
 //fibonacci sequence
 /*
 --------SUDO CODE--------

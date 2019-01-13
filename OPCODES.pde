@@ -38,10 +38,12 @@ static final int BRANCHNZERO = 14;//0E
 static final int BRANCHBORROW = 15;//0F
 static final int BRANCHNBORROW = 16;//10
 static final int BRANCHRETURN = 17;//11
+static final int KEYINPUT = 18;//12
 
 //Doubles Names
 String opcodeDNames[] = {"SINGLES", "AND", "LOAD", "PRINT", "PRNTA", "ADD", "COPY", "INSC", "INSM", "INSD", "COMPARE", "STORE", "STORE REGISTER",
                          "INCREMENT", "DECREMENT", "STORE PIXEL", "ZERO", "LOAD DATA", "test","x","c","v","b","a"};
 
 //Singles Names
-String opcodeSNames[] = {"NOP", "HALT", "JUMP CARRY", "JUMP", "JUMP NOT CARRY", "COMPARE IMMEDIATE"};
+String opcodeSNames[] = {"NOP", "HALT", "JMP C", "JMP", "JMP NC", "CMP IMM","JMP Z","JMP NZ","JMP B","JMP NB","BRN C","BRN","BRN NC","BRN Z","BRN NZ","BRN B","BRN NB",
+                         "BRN RTN","KEY IN","","",""};
