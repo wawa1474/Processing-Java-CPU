@@ -313,17 +313,20 @@ f = 0x00
 start:
 (0) = imagestart
 c = imagestart + 64
-loadb:
-b = 8
-for(b != 0; b--){
-  load [(0)] -> e
-  pixel e
-  inc (0)
-  inc f
-  if((0) = c){f += 0x07 jump start}
+while(true){
+  b = 8
+  for(b != 0; b--){
+    load [(0)] -> e
+    pixel e
+    inc (0)
+    inc f
+    if((0) = c){
+      f += 0x07 
+      jump start
+    }
+  }
+  f += 248
 }
-f += 248
-jump loadb
 -------------sudo code----------
 load reg[F] 256 * 10 + 10
 start:

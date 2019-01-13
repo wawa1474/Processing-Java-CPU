@@ -1,7 +1,8 @@
 int programLength;
 
-void hardReset(){
-  byte b[] = loadBytes("bootCode.bin");
+void hardReset(){//String input){
+  //byte b[] = loadBytes("bootCode.bin");
+  byte b[] = loadBytes(inputFile);
   programLength = b.length;
   
   mainRAM = new RAM(RAMSize);
@@ -34,6 +35,8 @@ void hardReset(){
   
   programMillis = millis();
   programFrames = frameCount;
+  
+  fileSelected = true;
 }
 
 void softReset(){
@@ -47,4 +50,17 @@ void softReset(){
 void Error(String error){
   println(error);
   CPUHalt = true;
+}
+
+void fileSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+    forceExit = true;
+    exit();
+  } else {
+    println("User selected " + selection.getAbsolutePath());
+    //hardReset(selection.getAbsolutePath());
+    inputFile = selection.getAbsolutePath();
+    hardReset();
+  }
 }

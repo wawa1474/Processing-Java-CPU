@@ -17,14 +17,17 @@ color screenForegroundColor = screen_Amber;
 color screenBackgroundColor = screen_Black;
 
 
-int instructionCount = 0x01;//FF
-int instructionMultiplyer = 0x01;//07
+int instructionCount = 1;//000;//0x01;//FF
+int instructionMultiplyer = 1;//000;//0x01;//07
 int instructionDelay = 0;
 int delayCount = 0;
 int programMillis = 0;
 int programFrames = 0;
 
 boolean CPUHalt = false;
+boolean fileSelected = false;
+String inputFile = "";
+boolean forceExit = false;
 
 int instructions = 0;
 
@@ -32,21 +35,27 @@ int instructions = 0;
 PImage screen = createImage(768,768,RGB);
 //PImage memory = createImage(256,256,RGB);
 PImage memory = createImage(768,768,RGB);
+boolean clearScreen = false;
 
 void setup(){
-  size(1552, 768);
+  size(1552, 1000);//1552,768
   //noSmooth();
-  hardReset();
-  print("bootCode: ");
-  for(int i = 0; i < programLength / 2; i++){
-    print(hex(mainRAM.contents[i]));
-    if(i < programLength / 2 - 1){print(", ");}
-  }
-  println();println();
+  //hardReset();
+  selectInput("Select a file to load:", "fileSelected");
+  while(!fileSelected && !forceExit){delay(50);}
   
-  push(char(255));
-  println(pop() & 0xFF);
-  println();
+  if(!forceExit){
+    print("bootCode: ");
+    for(int i = 0; i < programLength / 2; i++){
+      print(hex(mainRAM.contents[i]));
+      if(i < programLength / 2 - 1){print(", ");}
+    }
+    println();println();
+  
+    push(char(255));
+    println(pop() & 0xFF);
+    println();
+  }
 }
 
 void draw(){
@@ -65,8 +74,35 @@ void draw(){
   //instructions++;
   background(0);
   
+  if(clearScreen){
+    screen.loadPixels();
+    memory.loadPixels();
+    
+    for(int y = 0; y < 256; y++){
+      for(int x = 0; x < 256; x++){
+        for(int y2 = 0; y2 < 3; y2++){
+          for(int x2 = 0; x2 < 3; x2++){
+            screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = 0;
+            memory.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = 0;
+          }
+        }
+      }
+    }
+    
+    screen.updatePixels();
+    memory.updatePixels();
+    //fill(0);
+    //stroke(0);
+    //rect(0,0,width,height);
+    clearScreen = false;
+    //for(int i = 0; i < VRAMSize; i++){
+    //  videoRAM.contents[i] = char(int(random(0, 65536)));//'@';
+    //  //print(i);
+    //}
+  }
+  
   drawScreen();
-  drawMemory();
+  //drawMemory();
   
   strokeWeight(14);
   stroke(255);
@@ -104,6 +140,7 @@ void keyPressed(){
   
   if((int)key == 18 && keyCode == 82){//CTRL + R
     CPUHalt = false;
+    clearScreen = true;
     //loop();
     hardReset();
   }
@@ -142,10 +179,12 @@ void keyTyped(){
   if(key == 't'){
     screenType++;
     if(screenType > 5){screenType = 5;}
+    clearScreen = true;
   }
   if(key == 'g'){
     screenType--;
     if(screenType < 0){screenType = 0;}
+    clearScreen = true;
   }
   if(key == 'i'){
     color temp = screenForegroundColor;
@@ -158,5 +197,8 @@ void keyTyped(){
     screenBackgroundColor = screenBackgroundColor ^ color(255);
     //temp = temp ^ color(255);
     invertScreen = !invertScreen;
+  }
+  if(key == '-'){
+    selectInput("Select a file to load:", "fileSelected");
   }
 }
