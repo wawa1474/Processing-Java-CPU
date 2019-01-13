@@ -64,39 +64,13 @@ void draw(){
   
   //instructions++;
   background(0);
+  
   drawScreen();
+  drawMemory();
   
   strokeWeight(14);
   stroke(255);
   line(768 + 8, 0, 768 + 8, height);
-  
-  //strokeWeight(3);
-  //memory.loadPixels();
-  //for(int y = 0; y < 256; y++){
-  //  for(int x = 0; x < 256; x++){
-  //    //stroke((mainRAM.contents[(y * 256) + x] >> 8) & 0xFF, mainRAM.contents[(y * 256) + x] & 0xFF, 0);
-  //    //point(x * 3 + 2, y * 3 + 2);
-  //    //screen.pixels[(y * 256) + x] = color((mainRAM.contents[(y * 256) + x] >> 8) & 0xFF, mainRAM.contents[(y * 256) + x] & 0xFF, 0);
-  //    memory.pixels[(y * 256) + x] = color(((mainRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, mainRAM.contents[(y * 256) + x] & 0xFF, ((mainRAM.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
-  //  }
-  //}
-  //memory.updatePixels();
-  //memory.resize(768,768);
-  //image(memory,768 + 16,0);
-  //memory.resize(256,256);
-  
-  memory.loadPixels();
-  for(int y = 0; y < 256; y++){
-    for(int x = 0; x < 256; x++){
-      for(int y2 = 0; y2 < 3; y2++){
-        for(int x2 = 0; x2 < 3; x2++){
-          memory.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = color(((mainRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, (mainRAM.contents[(y * 256) + x] & 0xFF), ((mainRAM.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
-        }
-      }
-    }
-  }
-  memory.updatePixels();
-  image(memory,768 + 16,0);
   
   //if(keys['m']){
   //  text("Hello M!",800,256);
