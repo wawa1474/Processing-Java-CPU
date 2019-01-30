@@ -9,16 +9,24 @@ class RAM{//RAM
 int regPC;//Program Counter
 int regWP;//Workspace Pointer Register
 
+int regAM;//Adressing Mode Register
+/*
+used to change what group of addressing modes are used
+?are we using the more useful ones or the weird ones?
+have some amount of addressing mode information be part of the opcodes
+but keep it to a minimum number of bits (2-4?)
+*/
+
 int regST;//Status Register
 /*
 BIT    VALUE    HEX    INVERSE   MEANING
 0      1        0001 - FFFE      Carry
 1      2        0002 - FFFD      Zero
-2      4        0004 - FFFB      BORROW
-3      8        0008 - FFF7      NONE
-4      16       0010 - FFEF      NONE  
-5      32       0020 - FFDF      NONE
-6      64       0040 - FFBF      NONE
+2      4        0004 - FFFB      Borrow
+3      8        0008 - FFF7      Negative
+4      16       0010 - FFEF      Half Carry
+5      32       0020 - FFDF      Quarter Carry
+6      64       0040 - FFBF      Three-Quarter Carry
 7      128      0080 - FF7F      NONE
 8      256      0100 - FEFF      NONE
 9      512      0200 - FDFF      NONE

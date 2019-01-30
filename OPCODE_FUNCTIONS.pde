@@ -16,12 +16,15 @@ SBC - Subtract two numbers into ACCumalator with borrow
 
 NEG - NEGate ACCumalator
 NEGM - NEGate a Memory location
+NEGS - NEGate a Stack location
 
 INC - INCrement Register
 INCM - INC Memory location
+INCS - INC Stack location
 
 DEC - DECrement Register
 DECM - DEC Memory location
+DECS - DEC Stack location
 
 AND
 NAND
@@ -52,7 +55,17 @@ CCF/CLC - CLear Carry
 BT - Test bit and set Carry if true
 BTS - Test and Set bit and set Carry if true
 BTR - Test and Reset bit and set Carry if true
-BTC - Test and Invert bit and set carry if true
+BTC - Test and complement(invert) bit and set carry if true
+
+mainRAM.contents[500] = 0x0001;
+  bitTest(500, 0);
+  println(hex(mainRAM.contents[500]) + ", " + hex(regST));
+  bitTestReset(500, 0);
+  println(hex(mainRAM.contents[500]) + ", " + hex(regST));
+  bitTestSet(500, 0);
+  println(hex(mainRAM.contents[500]) + ", " + hex(regST));
+  bitTestInvert(500, 0);
+  println(hex(mainRAM.contents[500]) + ", " + hex(regST));
 */
 
 //Jumps
@@ -261,4 +274,10 @@ CALL BC - Call Function if Bit Clear
 
 
 Call Function ??
+*/
+
+/*
+function returns
+
+rtn - all the same as the jumps
 */

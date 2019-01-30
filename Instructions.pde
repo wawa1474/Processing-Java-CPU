@@ -1,3 +1,4 @@
+char opcodeType;
 char opcode;
 char data;
 
@@ -87,14 +88,12 @@ void decodeOpcode(){
   //println("DO: " + opcodeDNames[opcode]);
   char tmp;
   switch(opcode){
-    case SINGLES:
+    case SINGLES://0x00XX
       decodeSingles();
       break;
-      
+    
     case AND:
-      //print(regA);
-      AND(mainRAM.contents[regWP], fetchRegister());
-      //println("regA: " + hex(regA) + " AND " + hex(returnRegister()));
+      instructionAND();
       break;
       
     case LOAD:
@@ -111,11 +110,9 @@ void decodeOpcode(){
       fetchDataAddress();
       //println("Address: " + hex(mainRAM.contents[regWP + 0x0F]) + ", Data: " + hex(mainRAM.contents[regWP]));
       break;
-      
+    
     case ADD:
-      //print("reg " + hex(((data >> 4) & 0x07)) + ": " + hex(mainRAM.contents[regWP + ((data >> 4) & 0x07)]) + " + " + "reg " + hex((data & 0x07)) + ": " + hex(mainRAM.contents[regWP + (data & 0x07)]));
       ADD(mainRAM.contents[regWP + ((data >> 4) & 0x0F)], mainRAM.contents[regWP + (data & 0x0F)]);
-      //println(" = reg " + hex(0) + ": " + hex(mainRAM.contents[regWP]));
       break;
     
     case COPY:
@@ -168,12 +165,38 @@ void decodeOpcode(){
       break;
     
     case ADDI:
-      //print("reg " + hex(((data >> 4) & 0x07)) + ": " + hex(mainRAM.contents[regWP + ((data >> 4) & 0x07)]) + " + " + "reg " + hex((data & 0x07)) + ": " + hex(mainRAM.contents[regWP + (data & 0x07)]));
       ADDI(data, mainRAM.contents[regPC]);
-      //println(" = reg " + hex(0) + ": " + hex(mainRAM.contents[regWP]));
       incPC();
       break;
+    
+    case RGILOAD:
+      mainRAM.contents[regWP] = mainRAM.contents[regWP + (data & 0x0F)];
+      mainRAM.contents[regWP + (data & 0x0F)]++;
+      break;
+    
+    case RIJUMP:
+      regPC = mainRAM.contents[mainRAM.contents[regWP + (data & 0x0F)]];
+      break;
   }
+}
+
+void instructionADD(){
+      //print("reg " + hex(((data >> 4) & 0x07)) + ": " + hex(mainRAM.contents[regWP + ((data >> 4) & 0x07)]) + " + " + "reg " + hex((data & 0x07)) + ": " + hex(mainRAM.contents[regWP + (data & 0x07)]));
+      
+      //println(" = reg " + hex(0) + ": " + hex(mainRAM.contents[regWP]));
+}
+
+void instructionADDI(){
+      //print("reg " + hex(((data >> 4) & 0x07)) + ": " + hex(mainRAM.contents[regWP + ((data >> 4) & 0x07)]) + " + " + "reg " + hex((data & 0x07)) + ": " + hex(mainRAM.contents[regWP + (data & 0x07)]));
+      
+      //println(" = reg " + hex(0) + ": " + hex(mainRAM.contents[regWP]));
+      
+}
+
+void instructionAND(){
+      //print(regA);
+      AND(mainRAM.contents[regWP], fetchRegister());
+      //println("regA: " + hex(regA) + " AND " + hex(returnRegister()));
 }
 
 void decodeSingles(){

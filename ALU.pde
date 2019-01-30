@@ -82,6 +82,24 @@ void ADD(char a, char b){//ADDition
   }
 }
 
+//void ADD(char out, char a, char b){//ADDition
+//  //println("ADD");
+//  int temp = a+b;
+//  mainRAM.contents[out] = (char)temp;
+//  if(temp > 65535){
+//    regST |= 0x0001;
+//    //print("Carry!");
+//  }else{
+//    regST &= 0xFFFE;
+//  }
+//  if((temp & 0xFFFF) == 0){
+//    regST |= 0x0002;
+//    //print("Zero!");
+//  }else{
+//    regST &= 0xFFFD;
+//  }
+//}
+
 void ADDI(char reg, char imm){//ADDition
   //println("ADD");
   mainRAM.contents[regWP + (reg & 0x0F)] = char(mainRAM.contents[regWP + (reg & 0x0F)] + imm);
@@ -135,4 +153,43 @@ void COMPARE(char a, char b){//Compare
   }else{
     regST &= 0xFFFD;//A != B
   }
+}
+
+void bitTest(int word, int bit){
+  if((mainRAM.contents[word] & (0x01 << bit)) != 0){
+    regST |= 0x0001;
+    //print("Carry!");
+  }else{
+    regST &= 0xFFFE;
+  }
+}
+
+void bitTestSet(int word, int bit){
+  if((mainRAM.contents[word] & (0x01 << bit)) != 0){
+    regST |= 0x0001;
+    //print("Carry!");
+  }else{
+    regST &= 0xFFFE;
+  }
+  mainRAM.contents[word] |= (1 << bit);
+}
+
+void bitTestReset(int word, int bit){
+  if((mainRAM.contents[word] & (0x01 << bit)) != 0){
+    regST |= 0x0001;
+    //print("Carry!");
+  }else{
+    regST &= 0xFFFE;
+  }
+  mainRAM.contents[word] &= ~(1 << bit);
+}
+
+void bitTestInvert(int word, int bit){
+  if((mainRAM.contents[word] & (0x01 << bit)) != 0){
+    regST |= 0x0001;
+    //print("Carry!");
+  }else{
+    regST &= 0xFFFE;
+  }
+  mainRAM.contents[word] ^= (1 << bit);
 }

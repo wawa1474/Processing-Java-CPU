@@ -18,6 +18,8 @@ static final int STOREPIX = 15;//0F
 static final int ZERO = 16;//10
 static final int LOADDATA = 17;//11
 static final int ADDI = 18;//12
+static final int RGILOAD = 19;//13
+static final int RIJUMP= 20;//14
 
 //Singles
 static final int NOP = 0;//00
@@ -42,7 +44,7 @@ static final int KEYINPUT = 18;//12
 
 //Doubles Names
 String opcodeDNames[] = {"SINGLES", "AND", "LOAD", "PRINT", "PRNTA", "ADD", "COPY", "INSC", "INSM", "INSD", "COMPARE", "STORE", "STORE REGISTER",
-                         "INCREMENT", "DECREMENT", "STORE PIXEL", "ZERO", "LOAD DATA", "test","x","c","v","b","a"};
+                         "INCREMENT", "DECREMENT", "STORE PIXEL", "ZERO", "LOAD DATA", "ADD IMMEDIATE","x","c","v","b","a"};
 
 //Singles Names
 String opcodeSNames[] = {"NOP", "HALT", "JMP C", "JMP", "JMP NC", "CMP IMM","JMP Z","JMP NZ","JMP B","JMP NB","BRN C","BRN","BRN NC","BRN Z","BRN NZ","BRN B","BRN NB",

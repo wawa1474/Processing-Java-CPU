@@ -6,8 +6,8 @@ boolean keys[] = new boolean[65536];
 
 
 RAM mainRAM;
-int RAMSize = 65536;
-int STKSize = 256;
+int RAMSize = 65536;//65536
+int STKSize = 65536;//256
 
 RAM videoRAM;
 int VRAMSize = 65536;
@@ -25,7 +25,7 @@ int programMillis = 0;
 int programFrames = 0;
 
 boolean CPUHalt = false;
-boolean fileSelected = false;
+boolean fileSelected = false; 
 String inputFile = "";
 boolean forceExit = false;
 
@@ -75,30 +75,8 @@ void draw(){
   background(0);
   
   if(clearScreen){
-    screen.loadPixels();
-    memory.loadPixels();
-    
-    for(int y = 0; y < 256; y++){
-      for(int x = 0; x < 256; x++){
-        for(int y2 = 0; y2 < 3; y2++){
-          for(int x2 = 0; x2 < 3; x2++){
-            screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = 0;
-            memory.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = 0;
-          }
-        }
-      }
-    }
-    
-    screen.updatePixels();
-    memory.updatePixels();
-    //fill(0);
-    //stroke(0);
-    //rect(0,0,width,height);
+    clearScreen();
     clearScreen = false;
-    //for(int i = 0; i < VRAMSize; i++){
-    //  videoRAM.contents[i] = char(int(random(0, 65536)));//'@';
-    //  //print(i);
-    //}
   }
   
   drawScreen();
@@ -140,7 +118,7 @@ void keyPressed(){
   
   if((int)key == 18 && keyCode == 82){//CTRL + R
     CPUHalt = false;
-    clearScreen = true;
+    //clearScreen = true;
     //loop();
     hardReset();
   }

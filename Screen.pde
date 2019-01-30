@@ -111,7 +111,11 @@ void drawScreen(){
   screen.updatePixels();
   image(screen,0,0);
   memory.updatePixels();
-  image(memory,768 + 16,0);
+  if(screenType == 4 || screenType == 5){
+    image(memory,256 + 16,0);
+  }else{
+    image(memory,768 + 16,0);
+  }
 }
 
 color convertMemoryToColor(int memory){
@@ -128,6 +132,32 @@ color convertMemoryToColor(int memory){
 
 color convertMemoryToMono(int memory){
   return ((memory & 0x01) == 0x01)?screenForegroundColor:screenBackgroundColor;
+}
+
+void clearScreen(){
+  screen.loadPixels();
+  memory.loadPixels();
+    
+  for(int y = 0; y < 256; y++){
+    for(int x = 0; x < 256; x++){
+      for(int y2 = 0; y2 < 3; y2++){
+        for(int x2 = 0; x2 < 3; x2++){
+          screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = 0;
+          memory.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = 0;
+        }
+      }
+    }
+  }
+    
+  screen.updatePixels();
+  memory.updatePixels();
+  //fill(0);
+  //stroke(0);
+  //rect(0,0,width,height);
+  //for(int i = 0; i < VRAMSize; i++){
+  //  videoRAM.contents[i] = char(int(random(0, 65536)));//'@';
+  //  //print(i);
+  //}
 }
 
 void screenHexScreen(){

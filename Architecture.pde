@@ -1,6 +1,26 @@
 /*
 CISC?
 
+Interrupts
+  interrupt vector table?
+    with changable address like registers?
+    indirect jumps?
+    executable code?
+    acknowledge and inturrupt code with software interrupt handler
+  when key typed?
+  
+reset
+  reset vector?
+    startup?
+    software reset?
+    user reset?
+    watchdog reset?
+
+keyboard
+  have large boolean array of all keys?(do we automatically clear this or have software do it when a key is checked)
+  have fifo array of keys that were pressed?
+  maybe a single boolean of if a button is/was pressed
+
 Registers in RAM
   8?/16?
   Workspace register to locate registers in ram
@@ -14,15 +34,21 @@ Status Register
   Borrow Flag
 
 Stack
-  256? Spaces
-  Push/Pop PC
+  256/65536? Spaces
+  Push/Pop regPC, regWP, regSP, regST, regAM, REGS 0-15
 
 Addressing Modes
-  Direct
+  IMMediate
+  REGister
+  InDirect
+  RELative
   Register Indirect
-  Indexed Register Indirect
-  Memory Indirect
-  Relative
+  INdexed indirect
+  INdexed Register indirect
+  Indexed Register Offset indirect
+  Register Indirect autoIncrement
+  Register Indirect autoDecrement
+  Register Indirect Pre-Decrement
 
 CPU Information
   supported opcodes
@@ -37,17 +63,14 @@ Halt
 Compare
 Call
 Return
+Jump
 
-Direct Jumps
-Indirect Jumps
-Relative Jumps
-
-Increment/Decrement Register/Memory
+Increment/Decrement Register/Memory/Stack
 
 And/Nand
 Or/Nor
 Xor/Xnor
-Not
+Not/Negate
 
 Logical/Arithmetic Rotate Left/Right
 Carry/No Carry Shift Left/Right
@@ -56,7 +79,6 @@ Set/Clear Flags
 
 Addition Carry/No Carry
 Subtraction Borrow/No Borrow
-Negate
 
 Bit Set/Clear
 Bit Test
