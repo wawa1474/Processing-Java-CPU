@@ -1,12 +1,38 @@
+RAM RAM_work;
+int RAM_workSize = 1048576*4;//4 MB of ram?//65536
+
+RAM RAM_video;
+int RAM_videoSize = 65536;
+
+RAM RAM_stack;
+int RAM_stackSize = 65536;//?
+
+
 class RAM{//RAM
   char contents[];
+  int pointer = 0;//memory pointer
+  int indX = 0;//index register X
+  int indY = 0;//index register Y
   
   public RAM(int size){
-    contents = new char[size];
+    this.contents = new char[size];
+  }
+  
+  void push(int c){
+    this.contents[this.pointer] = char(c);
+    this.pointer++;
+  }
+  
+  int pop(){
+    this.pointer--;
+    return this.contents[this.pointer];
   }
 }
 
-int regPC;//Program Counter
+//RAM_main.pointer - Program Counter
+//RAM_stack.pointer - Stack Pointer
+//RAM_video.pointer - ?
+
 int regWP;//Workspace Pointer Register
 
 int regAM;//Adressing Mode Register
@@ -38,18 +64,5 @@ e      16384    4000 - BFFF      NONE
 f      32768    8000 - 7FFF      NONE
 */
   
-void incPC(){regPC++; if(regPC >= RAMSize){regPC = 0;}}
-void decPC(){if(regPC <= 0){regPC = RAMSize;} regPC--;}
-
-int regSP = 0;
-int stack[] = new int[STKSize];
-  
-void push(int c){
-  stack[regSP] = c;
-  regSP++;
-}
-  
-int pop(){
-  regSP--;
-  return stack[regSP];
-}
+void incPC(){RAM_work.pointer++; if(RAM_work.pointer >= RAM_workSize){RAM_work.pointer = 0;}}
+void decPC(){if(RAM_work.pointer <= 0){RAM_work.pointer = RAM_workSize;} RAM_work.pointer--;}

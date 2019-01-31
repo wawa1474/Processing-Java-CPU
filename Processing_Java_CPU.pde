@@ -5,18 +5,6 @@ color screen_Black = color(0);
 boolean keys[] = new boolean[65536];
 
 
-RAM mainRAM;
-int RAMSize = 65536;//65536
-int STKSize = 65536;//256
-
-RAM videoRAM;
-int VRAMSize = 65536;
-int screenType = 0;
-boolean invertScreen = false;
-color screenForegroundColor = screen_Amber;
-color screenBackgroundColor = screen_Black;
-
-
 int instructionCount = 1;//000;//0x01;//FF
 int instructionMultiplyer = 1;//000;//0x01;//07
 int instructionDelay = 0;
@@ -25,8 +13,6 @@ int programMillis = 0;
 int programFrames = 0;
 
 boolean CPUHalt = false;
-boolean fileSelected = false; 
-String inputFile = "";
 boolean forceExit = false;
 
 int instructions = 0;
@@ -37,8 +23,24 @@ PImage screen = createImage(768,768,RGB);
 PImage memory = createImage(768,768,RGB);
 boolean clearScreen = false;
 
+boolean showAll = false;
+boolean screenSizeChanged = true;
+
+
+//void settings(){
+//  if(showAll){
+//    size(1552, 1000);//1552,768
+//  }else{
+//    size(768, 768);//1552,768
+//  }
+//}
+
 void setup(){
   size(1552, 1000);//1552,768
+  surface.setResizable(true);
+  if(!showAll){
+    surface.setSize(768, 768);
+  }
   //noSmooth();
   //hardReset();
   selectInput("Select a file to load:", "fileSelected");
@@ -47,18 +49,28 @@ void setup(){
   if(!forceExit){
     print("bootCode: ");
     for(int i = 0; i < programLength / 2; i++){
-      print(hex(mainRAM.contents[i]));
+      print(hex(RAM_work.contents[i]));
       if(i < programLength / 2 - 1){print(", ");}
     }
     println();println();
   
-    push(char(255));
-    println(pop() & 0xFF);
+    RAM_stack.push(char(255));
+    println(RAM_stack.pop() & 0xFF);
     println();
   }
 }
 
 void draw(){
+  if(screenSizeChanged){
+    if(showAll){
+      surface.setSize(1552, 1000);
+    }else{
+      surface.setSize(768, 768);
+    }
+    screenSizeChanged = false;
+  }
+  
+  
   //noLoop();
   if(delayCount >= instructionDelay / frameRate && !CPUHalt){
     for(int i = 0; i < instructionCount * instructionMultiplyer; i++){
@@ -81,10 +93,6 @@ void draw(){
   
   drawScreen();
   //drawMemory();
-  
-  strokeWeight(14);
-  stroke(255);
-  line(768 + 8, 0, 768 + 8, height);
   
   //if(keys['m']){
   //  text("Hello M!",800,256);
@@ -178,5 +186,9 @@ void keyTyped(){
   }
   if(key == '-'){
     selectInput("Select a file to load:", "fileSelected");
+  }
+  if(key == '='){
+    showAll = !showAll;
+    screenSizeChanged = true;
   }
 }

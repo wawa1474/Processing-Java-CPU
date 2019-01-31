@@ -1,3 +1,9 @@
+int screenType = 0;
+boolean invertScreen = false;
+color screenForegroundColor = screen_Amber;
+color screenBackgroundColor = screen_Black;
+
+
 /*
 screen types:
 
@@ -40,7 +46,7 @@ void drawMemory(){
   for(int y = 0; y < 256; y++){
     for(int x = 0; x < 256; x++){
       //memory.pixels[(y * 768) + x] = color(((mainRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, (mainRAM.contents[(y * 256) + x] & 0xFF), ((mainRAM.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
-      memory.pixels[(y * 256) + x] = color(((mainRAM.contents[(y * 256) + x] >> 12) & 0x0F) * 16, (mainRAM.contents[(y * 256) + x] & 0xFF), ((mainRAM.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
+      memory.pixels[(y * 256) + x] = color(((RAM_work.contents[(y * 256) + x] >> 12) & 0x0F) * 16, (RAM_work.contents[(y * 256) + x] & 0xFF), ((RAM_work.contents[(y * 256) + x] >> 8) & 0x0F) * 16);
     }
   }
   
@@ -81,7 +87,9 @@ void drawMemory(){
 
 void drawScreen(){
   screen.loadPixels();
-  memory.loadPixels();
+  if(showAll){
+    memory.loadPixels();
+  }
   switch(screenType){
     case 0:
       screenHexScreen();
@@ -110,11 +118,17 @@ void drawScreen(){
   
   screen.updatePixels();
   image(screen,0,0);
-  memory.updatePixels();
-  if(screenType == 4 || screenType == 5){
-    image(memory,256 + 16,0);
-  }else{
-    image(memory,768 + 16,0);
+  if(showAll){
+    strokeWeight(14);
+    stroke(255);
+    line(768 + 8, 0, 768 + 8, height);
+    
+    memory.updatePixels();
+    if(screenType == 4 || screenType == 5){
+      image(memory,256 + 16,0);
+    }else{
+      image(memory,768 + 16,0);
+    }
   }
 }
 
@@ -163,8 +177,8 @@ void clearScreen(){
 void screenHexScreen(){
   for(int y = 0; y < 256; y++){
     for(int x = 0; x < 256; x++){
-      color tempPixel = convertMemoryToColor(videoRAM.contents[(y * 256) + x]);
-      color tempPixel2 = convertMemoryToColor(mainRAM.contents[(y * 256) + x]);
+      color tempPixel = convertMemoryToColor(RAM_video.contents[(y * 256) + x]);
+      color tempPixel2 = convertMemoryToColor(RAM_work.contents[(y * 256) + x]);
       
       for(int y2 = 0; y2 < 3; y2++){
         for(int x2 = 0; x2 < 3; x2++){
@@ -179,8 +193,8 @@ void screenHexScreen(){
 void screenMonoScreen(){
   for(int y = 0; y < 256; y++){
     for(int x = 0; x < 256; x++){
-      color tempPixel = convertMemoryToMono(videoRAM.contents[(y * 256) + x]);
-      color tempPixel2 = convertMemoryToMono(mainRAM.contents[(y * 256) + x]);
+      color tempPixel = convertMemoryToMono(RAM_video.contents[(y * 256) + x]);
+      color tempPixel2 = convertMemoryToMono(RAM_work.contents[(y * 256) + x]);
       for(int y2 = 0; y2 < 3; y2++){
         for(int x2 = 0; x2 < 3; x2++){
           screen.pixels[(y * (768 * 3)) + (x * 3) + x2 + (y2 * 768)] = tempPixel;
@@ -194,8 +208,8 @@ void screenMonoScreen(){
 void screenHexSparceScreen(){
   for(int y = 0; y < 256; y++){
     for(int x = 0; x < 256; x++){
-      color tempPixel = convertMemoryToColor(videoRAM.contents[(y * 256) + x]);
-      color tempPixel2 = convertMemoryToColor(mainRAM.contents[(y * 256) + x]);
+      color tempPixel = convertMemoryToColor(RAM_video.contents[(y * 256) + x]);
+      color tempPixel2 = convertMemoryToColor(RAM_work.contents[(y * 256) + x]);
       screen.pixels[(y * (768 * 3)) + (x * 3)] = tempPixel;
       memory.pixels[(y * (768 * 3)) + (x * 3)] = tempPixel2;
     }
@@ -205,8 +219,8 @@ void screenHexSparceScreen(){
 void screenMonoSparceScreen(){
   for(int y = 0; y < 256; y++){
     for(int x = 0; x < 256; x++){
-      color tempPixel = convertMemoryToMono(videoRAM.contents[(y * 256) + x]);
-      color tempPixel2 = convertMemoryToMono(mainRAM.contents[(y * 256) + x]);
+      color tempPixel = convertMemoryToMono(RAM_video.contents[(y * 256) + x]);
+      color tempPixel2 = convertMemoryToMono(RAM_work.contents[(y * 256) + x]);
       screen.pixels[(y * (768 * 3)) + (x * 3)] = tempPixel;
       memory.pixels[(y * (768 * 3)) + (x * 3)] = tempPixel2;
     }
@@ -216,8 +230,8 @@ void screenMonoSparceScreen(){
 void screenHexSmallScreen(){
   for(int y = 0; y < 256; y++){
     for(int x = 0; x < 256; x++){
-      color tempPixel = convertMemoryToColor(videoRAM.contents[(y * 256) + x]);
-      color tempPixel2 = convertMemoryToColor(mainRAM.contents[(y * 256) + x]);
+      color tempPixel = convertMemoryToColor(RAM_video.contents[(y * 256) + x]);
+      color tempPixel2 = convertMemoryToColor(RAM_work.contents[(y * 256) + x]);
       screen.pixels[(y * 768) + x] = tempPixel;
       memory.pixels[(y * 768) + x] = tempPixel2;
     }
@@ -227,8 +241,8 @@ void screenHexSmallScreen(){
 void screenMonoSmallScreen(){
   for(int y = 0; y < 256; y++){
     for(int x = 0; x < 256; x++){
-      color tempPixel = convertMemoryToMono(videoRAM.contents[(y * 256) + x]);
-      color tempPixel2 = convertMemoryToMono(mainRAM.contents[(y * 256) + x]);
+      color tempPixel = convertMemoryToMono(RAM_video.contents[(y * 256) + x]);
+      color tempPixel2 = convertMemoryToMono(RAM_work.contents[(y * 256) + x]);
       screen.pixels[(y * 768) + x] = tempPixel;
       memory.pixels[(y * 768) + x] = tempPixel2;
     }

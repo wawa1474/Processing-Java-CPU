@@ -19,7 +19,7 @@ reset
 keyboard
   have large boolean array of all keys?(do we automatically clear this or have software do it when a key is checked)
   have fifo array of keys that were pressed?
-  maybe a single boolean of if a button is/was pressed
+  maybe a single boolean of if a button is/was pressed?
 
 Registers in RAM
   8?/16?
@@ -55,6 +55,7 @@ CPU Information
   included hardware
   cpu version
   mmu type
+  processing clocks
   ...
 
 Nop
