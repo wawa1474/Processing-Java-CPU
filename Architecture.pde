@@ -8,6 +8,7 @@ Interrupts
     executable code?
     acknowledge and inturrupt code with software interrupt handler
   when key typed?
+  when screen finished displaying? (ie. once a frame?)
   
 reset
   reset vector?

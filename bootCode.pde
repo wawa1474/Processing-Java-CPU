@@ -391,3 +391,94 @@ FF00 FF00 0000 0000 0000 0000 0000 0000
 0000 0000 0000 0000 0000 0000 0000 0000
 0000 0000 0000 0000 0000 0000 0000 0000
 */
+
+
+/*
+display image test 6
+-------------sudo sudo code------------
+reg[f] = 0x00
+start:
+reg[0] = imagestart
+reg[c] = imagestart + 64
+while(true){
+  reg[b] = 8
+  for(reg[b] != 0; reg[b]--){
+    pixel mem[reg[0]++]
+    inc reg[f]
+    if(reg[0] = reg[c]){
+      reg[f] += 0x07 
+      INSC++
+      if(INSC == 65535){
+        hardReset();
+      }
+      jump start
+    }
+  }
+  reg[f] += 248
+}
+-------------sudo code----------
+load reg[F] 0x0000
+start:
+load reg[0] :imageStart
+load reg[C] :imageStart + 64
+loadB:
+load reg[B] 8
+loop:
+pixel mem[reg[0]++]
+inc reg[F]
+compare reg[0] reg[C]
+jump equal :end
+dec reg[B]
+jump not zero :loop
+addi reg[f] 248
+jump :loadB
+end:
+addi reg[f] 7
+INSC++
+compare INSC 0xFFFF
+jump zero :start
+HARDRESET()
+
+imageStart:
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 FF00 FF00 FF00 0000 FF00 0000 0000
+0000 FF00 0000 FF00 0000 FF00 0000 0000
+0000 FF00 0000 0000 0000 FF00 0000 0000
+0000 FF00 FF00 FF00 FF00 FF00 0000 0000
+0000 FF00 FF00 0000 0000 0000 0000 0000
+0000 0000 FF00 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+
+-------------------hex---------------
+020F 0000
+start:
+0200 :imagestart(0020)
+020C :imagestart + 64(0060)
+loadB:
+020B 0008
+loop:
+1900
+0D0F
+0A0C
+0006 :end(0014)
+0E0B
+0007 :loop(0008)
+120f 00f8
+0003 :loadB(0006)
+end:
+120f 0007
+0013
+0017 FFFF
+0006 :start(0002)
+0016
+
+imageStart:
+FF00 FF00 FF00 0000 FF00 0000 0000 0000
+FF00 0000 FF00 0000 FF00 0000 0000 0000
+FF00 0000 0000 0000 FF00 0000 0000 0000
+FF00 FF00 FF00 FF00 FF00 0000 0000 0000
+FF00 FF00 0000 0000 0000 0000 0000 0000
+0000 FF00 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+0000 0000 0000 0000 0000 0000 0000 0000
+*/

@@ -19,7 +19,16 @@ static final int ZERO = 16;//10
 static final int LOADDATA = 17;//11
 static final int ADDI = 18;//12
 static final int RGILOAD = 19;//13
-static final int RIJUMP= 20;//14
+static final int RIJUMP = 20;//14
+static final int PUSHREG = 21;//15
+static final int POPREG = 22;//16
+static final int COMPAREREGS = 23;//17
+static final int INDSTOREPIX = 24;//18
+static final int AIINDSTOREPIX = 25;//18
+static final int LOADREGINSC = 26;//19
+static final int REGCOMPAREIMM = 27;//20
+static final int LOADSPRITE = 28;//21
+static final int LOADINDA = 29;//22
 
 //Singles
 static final int NOP = 0;//00
@@ -41,6 +50,14 @@ static final int BRANCHBORROW = 15;//0F
 static final int BRANCHNBORROW = 16;//10
 static final int BRANCHRETURN = 17;//11
 static final int KEYINPUT = 18;//12
+static final int INCINSC = 19;//13
+static final int INCINSM = 20;//14
+static final int SKIPZERO = 21;//15
+static final int HARDRESET = 22;//16
+static final int INSCCOMPAREIMM = 23;//17
+static final int INDXINC = 24;//18
+static final int INDYINC = 25;//19
+static final int DRAWSPRITE = 26;//20
 
 //Doubles Names
 String opcodeDNames[] = {"SINGLES", "AND", "LOAD", "PRINT", "PRNTA", "ADD", "COPY", "INSC", "INSM", "INSD", "COMPARE", "STORE", "STORE REGISTER",

@@ -17,16 +17,6 @@ boolean forceExit = false;
 
 int instructions = 0;
 
-//PImage screen = createImage(256,256,RGB);
-PImage screen = createImage(768,768,RGB);
-//PImage memory = createImage(256,256,RGB);
-PImage memory = createImage(768,768,RGB);
-boolean clearScreen = false;
-
-boolean showAll = false;
-boolean screenSizeChanged = true;
-
-
 //void settings(){
 //  if(showAll){
 //    size(1552, 1000);//1552,768
@@ -46,18 +36,7 @@ void setup(){
   selectInput("Select a file to load:", "fileSelected");
   while(!fileSelected && !forceExit){delay(50);}
   
-  if(!forceExit){
-    print("bootCode: ");
-    for(int i = 0; i < programLength / 2; i++){
-      print(hex(RAM_work.contents[i]));
-      if(i < programLength / 2 - 1){print(", ");}
-    }
-    println();println();
-  
-    RAM_stack.push(char(255));
-    println(RAM_stack.pop() & 0xFF);
-    println();
-  }
+  logo = new sprite(0x68, 8, 8, 32);
 }
 
 void draw(){
@@ -94,6 +73,9 @@ void draw(){
   drawScreen();
   //drawMemory();
   
+  //logo.setPosition(logo.x + instructionCount,logo.y + instructionMultiplyer);
+  logo.draw();
+  
   //if(keys['m']){
   //  text("Hello M!",800,256);
   //}
@@ -109,6 +91,10 @@ void draw(){
   surface.setTitle("Instruction: " + str(instructions) + ", FPS: " + str(floor(frameRate)) + ", iC: " + instructionCount + ", iM: " + instructionMultiplyer + ", iD: " + instructionDelay);//hex(mainRAM.contents[regWP]));
   //text(frames, 300,100);
   //text(frameRate, 300,150);
+  
+  //if(instructionCount > 65536){
+  //  hardReset();
+  //}
 }
 
 void keyPressed(){
@@ -190,5 +176,23 @@ void keyTyped(){
   if(key == '='){
     showAll = !showAll;
     screenSizeChanged = true;
+  }
+  if(key == 'h'){
+    logo.setPosition(logo.x,logo.y - 10);
+  }
+  if(key == 'v'){
+    logo.setPosition(logo.x - 10,logo.y);
+  }
+  if(key == 'b'){
+    logo.setPosition(logo.x,logo.y + 10);
+  }
+  if(key == 'n'){
+    logo.setPosition(logo.x + 10,logo.y);
+  }
+  if(key == ','){
+    logo.loopX = !logo.loopX;
+  }
+  if(key == '.'){
+    logo.loopY = !logo.loopY;
   }
 }

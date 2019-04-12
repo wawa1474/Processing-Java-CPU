@@ -5,35 +5,55 @@ String inputFile = "";
 void hardReset(){//String input){
   //byte b[] = loadBytes("bootCode.bin");
   byte b[] = loadBytes(inputFile);
-  programLength = b.length;
-  
-  RAM_work = new RAM(RAM_workSize);
-  int j = 0;
-  for(int i = 0; i < programLength; i+=2){
-    //RAM_work.contents[j] = char(b[i] & 0xFF);
-    //RAM_work.contents[j] = char((RAM_work.contents[j] << 8) | (b[i+1] & 0xFF));
-    RAM_work.contents[j] = char((b[i] << 8) | (b[i+1] & 0xFF));
-    j++;
-  }
-  
-  for(int i = programLength/2; i < RAM_workSize; i++){// - 0x0F; i++){
-    //mainRAM.contents[i] = char(int(random(0, 65536)));
-  }
-  
-  RAM_video = new RAM(RAM_videoSize);
-  for(int i = 0; i < RAM_videoSize; i++){
-    RAM_video.contents[i] = char(int(random(0, 65536)));
-  }
+  programLength = b.length / 2;
   
   regST = 0;
   regWP = 0xFFF0;
   
-  RAM_work.contents[regWP + 0x0F] = char(int(random(0,65536)));
+  instructionCount = 1;
+  instructionMultiplyer = 1;
+  instructionDelay = 0;
+  delayCount = 0;
   
-  RAM_stack = new RAM(RAM_stackSize);
+  workRAM = new RAM(workRAMSize);
+  workRAM.pointer = 0;
+  workRAM.contents[regWP + 0x0F] = char(int(random(0,65536)));
+
+  println("START OF BOOT CODE:");
+  print(hex(0) + ": ");
+  for(int i = 0; i < programLength; i++){
+    //RAM_work.contents[j] = char(b[i] & 0xFF);
+    //RAM_work.contents[j] = char((RAM_work.contents[j] << 8) | (b[i+1] & 0xFF));
+    workRAM.contents[i] = char((b[i * 2] << 8) | (b[(i * 2) + 1] & 0xFF));
+    
+    print(hex(workRAM.contents[i]));
+    if(i < programLength - 1){
+      print(", ");
+      if((i + 1) % 32 == 0){
+        println();
+        print(hex(i) + ": ");
+      }
+    }
+    //if((i + 1) % 32 == 0 || (i + 1) == programLength){
+    //  //println();
+    //}
+  }
+  println();println(":END OF BOOT CODE...");println();
   
-  RAM_work.pointer = 0;
-  RAM_stack.pointer = 0;
+  //for(int i = programLength/2; i < RAM_workSize; i++){// - 0x0F; i++){
+    //mainRAM.contents[i] = char(int(random(0, 65536)));
+  //}
+  
+  videoRAM = new RAM(videoRAMSize);
+  for(int i = 0; i < videoRAMSize; i++){
+    videoRAM.contents[i] = char(0x2202);//int(random(0, 65536)));//
+  }
+  
+  stackRAM = new RAM(stackRAMSize);
+  stackRAM.pointer = 0;
+  
+  stackRAM.push(char(255));
+  println("stack test: " + (stackRAM.pop() & 0xFF));
   
   instructions = 0;
   
@@ -44,7 +64,7 @@ void hardReset(){//String input){
 }
 
 void softReset(){
-  RAM_work.pointer = 0;
+  workRAM.pointer = 0;
   regST = 0;
   regWP = 0xFFF0;
   
@@ -62,7 +82,7 @@ void fileSelected(File selection) {
     forceExit = true;
     exit();
   } else if(selection != null) {
-    println("User selected " + selection.getAbsolutePath());
+    println("User selected " + selection.getAbsolutePath());println();
     //hardReset(selection.getAbsolutePath());
     inputFile = selection.getAbsolutePath();
     hardReset();
