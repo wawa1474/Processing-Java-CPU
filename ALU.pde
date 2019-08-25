@@ -1,47 +1,47 @@
 void XOR(char a, char b){//Exclusive OR
   //println("XOR");
-  workRAM.contents[regWP] = char(a^b);
+  workRAM.write(regWP, char(a^b));
 }
 
 void XNOR(char a, char b){//Exclusive Not OR
   //println("XNOR");
-  workRAM.contents[regWP] = char((a^b)^0xFFFF);
+  workRAM.write(regWP, char((a^b)^0xFFFF));
 }
 
 void AND(char a, char b){//And
   //println("reg 1: " + hex(a) + " & reg " + register + ": " + hex(b));
-  workRAM.contents[regWP] = char(a&b);
+  workRAM.write(regWP, char(a&b));
 }
 
 void NAND(char a, char b){//Not AND
   //println("NAND");
-  workRAM.contents[regWP] = char((a&b)^0xFFFF);
+  workRAM.write(regWP, char((a&b)^0xFFFF));
 }
 
 void OR(char a, char b){//OR
   //println("OR");
-  workRAM.contents[regWP] = char(a|b);
+  workRAM.write(regWP, char(a|b));
 }
 
 void NOR(char a, char b){//Not OR
   //println("NOR");
-  workRAM.contents[regWP] = char((a|b)^0xFFFF);
+  workRAM.write(regWP, char((a|b)^0xFFFF));
 }
 
 void NOT(char a){
   //println("NOT");
-  workRAM.contents[regWP] = char(a^0xFFFF);
+  workRAM.write(regWP, char(a^0xFFFF));
 }
 
-void INC(char reg){
-  if(workRAM.contents[regWP + reg] == 65535){
+void INC(int addr_){
+  if(workRAM.read(addr_) == 65535){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  workRAM.contents[regWP + reg]++;
-  if(workRAM.contents[regWP + reg] == 0){
+  workRAM.write(addr_, char(workRAM.read(addr_) + 1));
+  if(workRAM.read(addr_) == 0){
     regST |= 0x0002;
     //print("Zero!");
   }else{
@@ -49,15 +49,15 @@ void INC(char reg){
   }
 }
 
-void DEC(char reg){
-  if(workRAM.contents[regWP + reg] == 0){
+void DEC(int addr_){
+  if(workRAM.read(addr_) == 0){
     regST |= 0x0004;
     //print("BORROW!");
   }else{
     regST &= 0xFFFB;
   }
-  workRAM.contents[regWP + reg]--;
-  if(workRAM.contents[regWP + reg] == 0){
+  workRAM.write(addr_, char(workRAM.read(addr_) - 1));
+  if(workRAM.read(addr_) == 0){
     regST |= 0x0002;
     //print("Zero!");
   }else{
@@ -67,14 +67,14 @@ void DEC(char reg){
 
 void ADD(char a, char b){//ADDition
   //println("ADD");
-  workRAM.contents[regWP] = char(a+b);
+  workRAM.write(regWP, char(a+b));
   if(int(a + b) > 65535){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  if(workRAM.contents[regWP] == 0){
+  if(workRAM.read(regWP) == 0){
     regST |= 0x0002;
     //print("Zero!");
   }else{
@@ -102,14 +102,14 @@ void ADD(char a, char b){//ADDition
 
 void ADDI(char reg, char imm){//ADDition
   //println("ADD");
-  workRAM.contents[regWP + (reg & 0x0F)] = char(workRAM.contents[regWP + (reg & 0x0F)] + imm);
-  if(int(char(workRAM.contents[regWP + (reg & 0x0F)] + imm)) > 65535){
+  workRAM.write(regWP + (reg & 0x0F), char(workRAM.read(regWP + (reg & 0x0F)) + imm));
+  if(int(workRAM.read(regWP + (reg & 0x0F)) + imm) > 65535){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  if(workRAM.contents[regWP + (reg & 0x0F)] == 0){
+  if(workRAM.read(regWP + (reg & 0x0F)) == 0){
     regST |= 0x0002;
     //print("Zero!");
   }else{
@@ -119,14 +119,14 @@ void ADDI(char reg, char imm){//ADDition
 
 void SUB(char a, char b){//SUBtraction
   println("SUB");
-  workRAM.contents[regWP] = char(a-b);
+  workRAM.write(regWP, char(a-b));
   if(int(a - b) < 0){//A < B
     regST |= 0x0004;
     //print("BORROW!");
   }else{
     regST &= 0xFFFB;//A > B
   }
-  if(workRAM.contents[regWP] == 0){
+  if(workRAM.read(regWP) == 0){
     regST |= 0x0002;//A == B
     //print("Zero!");
   }else{
@@ -156,7 +156,7 @@ void COMPARE(char a, char b){//Compare
 }
 
 void bitTest(int word, int bit){
-  if((workRAM.contents[word] & (0x01 << bit)) != 0){
+  if((workRAM.read(word) & (0x01 << bit)) != 0){
     regST |= 0x0001;
     //print("Carry!");
   }else{
@@ -165,31 +165,31 @@ void bitTest(int word, int bit){
 }
 
 void bitTestSet(int word, int bit){
-  if((workRAM.contents[word] & (0x01 << bit)) != 0){
+  if((workRAM.read(word) & (0x01 << bit)) != 0){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  workRAM.contents[word] |= (1 << bit);
+  workRAM.write(word, char(workRAM.read(word) | (1 << bit)));
 }
 
 void bitTestReset(int word, int bit){
-  if((workRAM.contents[word] & (0x01 << bit)) != 0){
+  if((workRAM.read(word) & (0x01 << bit)) != 0){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  workRAM.contents[word] &= ~(1 << bit);
+  workRAM.write(word, char(workRAM.read(word) & (1 << bit)));
 }
 
 void bitTestInvert(int word, int bit){
-  if((workRAM.contents[word] & (0x01 << bit)) != 0){
+  if((workRAM.read(word) & (0x01 << bit)) != 0){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  workRAM.contents[word] ^= (1 << bit);
+  workRAM.write(word, char(workRAM.read(word) ^ (1 << bit)));
 }

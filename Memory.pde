@@ -15,18 +15,26 @@ class RAM{//RAM
   int indY = 0;//index register Y
   int indA = 0;//index amount
   
-  public RAM(int size){
-    this.contents = new char[size];
+  RAM(int size_){
+    contents = new char[size_];
   }
   
-  void push(int c){
-    this.contents[this.pointer] = char(c);
-    this.pointer++;
+  void push(int c_){
+    contents[pointer] = char(c_);
+    pointer++;
   }
   
   char pop(){
-    this.pointer--;
-    return this.contents[this.pointer];
+    pointer--;
+    return contents[pointer];
+  }
+  
+  void write(int addr_, char data_){
+    contents[addr_] = data_;
+  }
+  
+  char read(int addr_){
+    return contents[addr_];
   }
 }
 

@@ -5,8 +5,8 @@ char data;
 int register;
 
 void fetchOpcode(){
-  opcode = char(workRAM.contents[workRAM.pointer] >> 8);
-  data = char(workRAM.contents[workRAM.pointer] & 0xFF);
+  opcode = char(workRAM.read(workRAM.pointer) >> 8);
+  data = char(workRAM.read(workRAM.pointer) & 0xFF);
   //println("FO: " + hex(RAM_main.pointer) + " = " + hex(opcode));
   incPC();
 }
@@ -14,7 +14,7 @@ void fetchOpcode(){
 void fetchData(){
   register = data;
   //print("FD: " + "reg = " + register);
-  data = workRAM.contents[workRAM.pointer];
+  data = workRAM.read(workRAM.pointer);
   //println(", " + hex(RAM_main.pointer) + " = "  + hex(data));
   incPC();
   setRegister(data);
@@ -22,7 +22,7 @@ void fetchData(){
 
 void storeData(){
   //print("SD: " + "Address = " + hex(mainRAM.contents[RAM_main.pointer]));
-  workRAM.contents[workRAM.pointer] = workRAM.contents[regWP + data];
+  workRAM.write(workRAM.pointer, workRAM.read(regWP + data));
   //println(", " + "Data = "  + hex(mainRAM.contents[regWP + data]));
   incPC();
 }
@@ -33,25 +33,25 @@ void loadData(){
   //print(", " + "Data = "  + hex(mainRAM.contents[mainRAM.contents[regWP + (data & 0x0F)]]));
   //print(", " + "Register0 = "  + hex(((data >> 4) & 0x0F)));
   //println(", " + "Register1 = "  + hex(data & 0x0F));
-  workRAM.contents[regWP + ((data >> 4) & 0x0F)] = workRAM.contents[workRAM.contents[regWP + (data & 0x0F)]];
+  workRAM.write(regWP + ((data >> 4) & 0x0F), workRAM.read(workRAM.read(regWP + (data & 0x0F))));
   //incPC();
 }
 
 void storeRegister(){
   //print("SR: " + "Address = " + hex(mainRAM.contents[regWP + 0x0F]));
-  workRAM.contents[workRAM.contents[regWP + 0x0F]] = workRAM.contents[regWP + data];
+  workRAM.write(workRAM.read(regWP + 0x0F), workRAM.read(regWP + data));
   //println(", " + "Register = "  + hex(mainRAM.contents[regWP + data]));
 }
 
 void loadRegister(){//need to rewrit reto work
   //print("SR: " + "Address = " + hex(mainRAM.contents[regWP + 0x0F]));
-  workRAM.contents[workRAM.contents[regWP + 0x0F]] = workRAM.contents[regWP + data];
+  workRAM.write(workRAM.read(regWP + 0x0F), workRAM.read(regWP + data));
   //println(", " + "Register = "  + hex(mainRAM.contents[regWP + data]));
 }
 
 void fetchDataAddress(){
   register = 0;
-  data = workRAM.contents[workRAM.contents[regWP + 0x0F]];
+  data = workRAM.read(workRAM.read(regWP + 0x0F));
   //println("FDA: " + hex(mainRAM.contents[regWP + 0x0F]) + " = "  + hex(data));
   setRegister(data);
 }
@@ -59,7 +59,7 @@ void fetchDataAddress(){
 void fetchAddress(){
   register = 0x0F;
   //print("Address: ");
-  data = workRAM.contents[workRAM.pointer];
+  data = workRAM.read(workRAM.pointer);
   //println(hex(RAM_main.pointer) + " = "  + hex(data));
   incPC();
   setRegister(data);
@@ -68,13 +68,13 @@ void fetchAddress(){
 char fetchRegister(){
   register = data;
   //println("FR: " + register);
-  return workRAM.contents[regWP + register];
+  return workRAM.read(regWP + register);
 }
 
 void setRegister(char a){
   //print("SR: ");
   //print(hex(a));
-  workRAM.contents[regWP + register] = a;
+  workRAM.write(regWP + register, a);
   //println("reg " + register + ": " + hex(mainRAM.contents[regWP + register]));
 }
 
@@ -106,11 +106,11 @@ void decodeOpcode(){
       break;
     
     case ADD:
-      ADD(workRAM.contents[regWP + ((data >> 4) & 0x0F)], workRAM.contents[regWP + (data & 0x0F)]);
+      ADD(workRAM.read(regWP + ((data >> 4) & 0x0F)), workRAM.read(regWP + (data & 0x0F)));
       break;
     
     case COPY:
-      workRAM.contents[regWP + (data & 0x0F)] = workRAM.contents[regWP + ((data >> 4) & 0x0F)];
+      workRAM.write(regWP + (data & 0x0F), workRAM.read(regWP + ((data >> 4) & 0x0F)));
       //println("reg " + hex(((data >> 4) & 0x07)) + ": " + hex(mainRAM.contents[regWP + ((data >> 4) & 0x07)]) + " -> " + "reg " + hex(data& 0x07) + ": " + hex(mainRAM.contents[regWP + (data& 0x07)]));
       break;
     
@@ -127,7 +127,7 @@ void decodeOpcode(){
       break;
     
     case COMPARE:
-      COMPARE(workRAM.contents[regWP + (data & 0x0F)], workRAM.contents[regWP + ((data >> 4) & 0x0F)]);
+      COMPARE(workRAM.read(regWP + (data & 0x0F)), workRAM.read(regWP + ((data >> 4) & 0x0F)));
       break;
     
     case STORE:
@@ -139,19 +139,19 @@ void decodeOpcode(){
       break;
     
     case INC:
-      INC(data);
+      INC(regWP + data);
       break;
     
     case DEC:
-      DEC(data);
+      DEC(regWP + data);
       break;
     
     case STOREPIX:
-      videoRAM.contents[workRAM.contents[regWP + 0x0F]] = workRAM.contents[regWP + data];
+      videoRAM.contents[workRAM.read(regWP + 0x0F)] = workRAM.read(regWP + data);
       break;
     
     case ZERO:
-      workRAM.contents[regWP + (data & 0x0F)] = 0;
+      workRAM.write(regWP + (data & 0x0F), char(0));
       break;
     
     case LOADDATA:
@@ -159,51 +159,51 @@ void decodeOpcode(){
       break;
     
     case ADDI:
-      ADDI(data, workRAM.contents[workRAM.pointer]);
+      ADDI(data, workRAM.read(workRAM.pointer));
       incPC();
       break;
     
     case RGILOAD:
-      workRAM.contents[regWP] = workRAM.contents[regWP + (data & 0x0F)];
-      workRAM.contents[regWP + (data & 0x0F)]++;
+      workRAM.write(regWP, workRAM.read(regWP + (data & 0x0F)));
+      INC(regWP + (data & 0x0F));
       break;
     
     case RIJUMP:
-      workRAM.pointer = workRAM.contents[workRAM.contents[regWP + (data & 0x0F)]];
+      workRAM.pointer = workRAM.read(workRAM.read(regWP + (data & 0x0F)));
       break;
     
     case PUSHREG:
-      stackRAM.push(workRAM.contents[regWP + (data & 0x0F)]);
+      stackRAM.push(workRAM.read(regWP + (data & 0x0F)));
       break;
     
     case POPREG:
-      workRAM.contents[regWP + (data & 0x0F)] = stackRAM.pop();
+      workRAM.write(regWP + (data & 0x0F), stackRAM.pop());
       break;
     
     case COMPAREREGS:
-      COMPARE(workRAM.contents[regWP + ((data >> 8) & 0x0F)], workRAM.contents[regWP + (data & 0x0F)]);
+      COMPARE(workRAM.read(regWP + ((data >> 8) & 0x0F)), workRAM.read(regWP + (data & 0x0F)));
       break;
     
     case INDSTOREPIX:
-      videoRAM.contents[workRAM.contents[regWP + 0x0F]] = workRAM.contents[workRAM.contents[regWP + data]];
+      videoRAM.contents[workRAM.read(regWP + 0x0F)] = workRAM.read(workRAM.read(regWP + data));
       break;
     
     case AIINDSTOREPIX:
-      videoRAM.contents[workRAM.contents[regWP + 0x0F]] = workRAM.contents[workRAM.contents[regWP + data]];
-      workRAM.contents[regWP + data]++;
+      videoRAM.contents[workRAM.read(regWP + 0x0F)] = workRAM.read(workRAM.read(regWP + data));
+      INC(regWP + data);
       break;
     
     case LOADREGINSC:
-      workRAM.contents[regWP + data] = (char)instructionCount;
+      workRAM.write(regWP + data, (char)instructionCount);
       break;
     
     case REGCOMPAREIMM:
-      COMPARE(workRAM.contents[regWP + data], workRAM.contents[workRAM.pointer]);
+      COMPARE(workRAM.read(regWP + data), workRAM.read(workRAM.pointer));
       incPC();
       break;
     
     case LOADSPRITE:
-      logo = new sprite((int)workRAM.contents[workRAM.pointer + 1], workRAM.contents[workRAM.pointer] & 0x00FF, (workRAM.contents[workRAM.pointer] >> 8) & 0x00FF, (int)data);
+      logo = new sprite((int)workRAM.read(workRAM.pointer + 1), workRAM.read(workRAM.pointer) & 0x00FF, (workRAM.read(workRAM.pointer) >> 8) & 0x00FF, (int)data);
       incPC();
       incPC();
       break;
@@ -229,8 +229,17 @@ void instructionADDI(){
 
 void instructionAND(){
       //print(regA);
-      AND(workRAM.contents[regWP], fetchRegister());
+      AND(workRAM.read(regWP), fetchRegister());
       //println("regA: " + hex(regA) + " AND " + hex(returnRegister()));
+}
+
+void jump(){
+  workRAM.pointer = workRAM.read(workRAM.pointer);
+}
+
+void branch(){
+  stackRAM.push(workRAM.pointer + 1);
+  workRAM.pointer = workRAM.read(workRAM.pointer);
 }
 
 void decodeSingles(){
@@ -247,7 +256,7 @@ void decodeSingles(){
     case JUMPCARRY:
       if((regST & 0x0001) == 0x0001){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        jump();
         break;
       }
       incPC();
@@ -255,27 +264,27 @@ void decodeSingles(){
     
     case JUMP:
       //println("Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-      workRAM.pointer = workRAM.contents[workRAM.pointer];
+      jump();
       break;
     
     case JUMPNCARRY:
       if((regST & 0x0001) != 0x0001){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        jump();
         break;
       }
       incPC();
       break;
     
     case COMPAREIMM:
-      COMPARE(workRAM.contents[regWP], workRAM.contents[workRAM.pointer]);
+      COMPARE(workRAM.read(regWP), workRAM.read(workRAM.pointer));
       incPC();
       break;
     
     case JUMPZERO:
       if((regST & 0x0002) == 0x0002){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        jump();
         break;
       }
       incPC();
@@ -284,7 +293,7 @@ void decodeSingles(){
     case JUMPNZERO:
       if((regST & 0x0002) != 0x0002){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        jump();
         break;
       }
       incPC();
@@ -293,7 +302,7 @@ void decodeSingles(){
     case JUMPBORROW:
       if((regST & 0x0004) == 0x0004){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        jump();
         break;
       }
       incPC();
@@ -302,7 +311,7 @@ void decodeSingles(){
     case JUMPNBORROW:
       if((regST & 0x0004) != 0x0004){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        jump();
         break;
       }
       incPC();
@@ -311,8 +320,7 @@ void decodeSingles(){
     case BRANCHCARRY:
       if((regST & 0x0001) == 0x0001){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        stackRAM.push(workRAM.pointer + 1);
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        branch();
         break;
       }
       incPC();
@@ -320,15 +328,13 @@ void decodeSingles(){
     
     case BRANCH:
       //println("Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-      stackRAM.push(workRAM.pointer);
-      workRAM.pointer = workRAM.contents[workRAM.pointer];
+      branch();
       break;
     
     case BRANCHNCARRY:
       if((regST & 0x0001) != 0x0001){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        stackRAM.push(workRAM.pointer + 1);
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        branch();
         break;
       }
       incPC();
@@ -337,8 +343,7 @@ void decodeSingles(){
     case BRANCHZERO:
       if((regST & 0x0002) == 0x0002){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        stackRAM.push(workRAM.pointer + 1);
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        branch();
         break;
       }
       incPC();
@@ -347,8 +352,7 @@ void decodeSingles(){
     case BRANCHNZERO:
       if((regST & 0x0002) != 0x0002){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        stackRAM.push(workRAM.pointer + 1);
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        branch();
         break;
       }
       incPC();
@@ -357,8 +361,7 @@ void decodeSingles(){
     case BRANCHBORROW:
       if((regST & 0x0004) == 0x0004){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        stackRAM.push(workRAM.pointer + 1);
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        branch();
         break;
       }
       incPC();
@@ -367,8 +370,7 @@ void decodeSingles(){
     case BRANCHNBORROW:
       if((regST & 0x0004) != 0x0004){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
-        stackRAM.push(workRAM.pointer + 1);
-        workRAM.pointer = workRAM.contents[workRAM.pointer];
+        branch();
         break;
       }
       incPC();
@@ -379,7 +381,7 @@ void decodeSingles(){
       break;
     
     case KEYINPUT:
-      if(keys[workRAM.contents[workRAM.pointer]] == true){
+      if(keys[workRAM.read(workRAM.pointer)] == true){
         regST |= 0x0002;//set zero flag
         //println(int(mainRAM.contents[RAM_main.pointer]));
       }else{
@@ -408,7 +410,7 @@ void decodeSingles(){
       break;
     
     case INSCCOMPAREIMM:
-      COMPARE((char)instructionCount, workRAM.contents[workRAM.pointer]);
+      COMPARE((char)instructionCount, workRAM.read(workRAM.pointer));
       incPC();
       break;
     

@@ -1,12 +1,18 @@
 color screen_Green = color(0,255,0);
 color screen_Amber = #FFCC00;
 color screen_Black = color(0);
+final int kilo_Word = 1024;
+final int kilo_Byte_Int = kilo_Word / 4;
+
+final int mega_Word = kilo_Word * 1024;
+final int mega_Byte_Int = mega_Word / 4;
+
 
 boolean keys[] = new boolean[65536];
 
 
-int instructionCount = 1;//000;//0x01;//FF
-int instructionMultiplyer = 1;//000;//0x01;//07
+int instructionCount = 500;//000;//0x01;//FF
+int instructionMultiplyer = 500;//000;//0x01;//07
 int instructionDelay = 0;
 int delayCount = 0;
 int programMillis = 0;
@@ -25,18 +31,37 @@ int instructions = 0;
 //  }
 //}
 
+Background mem;
+Background dis;
+boolean autoLoad = true;
+
+int[] test2 = new int[4 * mega_Word];
+
 void setup(){
   size(1552, 1000);//1552,768
   surface.setResizable(true);
   if(!showAll){
     surface.setSize(768, 768);
   }
-  //noSmooth();
+  noSmooth();
   //hardReset();
-  selectInput("Select a file to load:", "fileSelected");
+  if(autoLoad){
+    inputFile = new File(sketchPath() + "/code bak/imagedisplaytest4.bin").getAbsolutePath();
+    hardReset();
+  }else{
+    selectInput("Select a file to load:", "fileSelected");
+  }
   while(!fileSelected && !forceExit){delay(50);}
   
-  logo = new sprite(0x68, 8, 8, 32);
+  //logo = new sprite(0x68, 8, 8, 32);
+  //thread("master");
+  mem = new Background(768, 0, 256, 256, RGB);
+  dis = new Background(0, 0, 256, 256, RGB);
+  
+  for(int i = 0; i < test2.length; i++){
+    test2[i] = i;
+  }
+  println(test2[int(random(test2.length))]);
 }
 
 void draw(){
@@ -55,7 +80,7 @@ void draw(){
     for(int i = 0; i < instructionCount * instructionMultiplyer; i++){
       fetchOpcode();
       decodeOpcode();
-      if(CPUHalt == true){i = instructionCount * instructionMultiplyer; /*noLoop();*/ println("CPU Halted!"); println((millis() - programMillis) + " Ms, " + (frameCount - programFrames) + " Frames");}
+      if(CPUHalt == true){i = instructionCount * instructionMultiplyer; /*noLoop();*/ println("CPU Halted!"); println((millis() - programMillis) + " Ms, " + (frameCount - programFrames) + " Frames, " + instructions + " Instructions");}
       instructions++;
     }
     delayCount = 0;
@@ -63,18 +88,24 @@ void draw(){
   if(instructionDelay != 0){delayCount++;}// delay(1);}
   
   //instructions++;
-  background(0);
+  //background(0);
   
   if(clearScreen){
     clearScreen();
     clearScreen = false;
   }
   
-  drawScreen();
+  //thread("drawScreen");
+  //drawScreen();
   //drawMemory();
   
+  mem.set(workRAM.contents, 0);
+  mem.draw(768, 768);
+  dis.set(videoRAM.contents, 0);
+  dis.draw(768, 768);
+  
   //logo.setPosition(logo.x + instructionCount,logo.y + instructionMultiplyer);
-  logo.draw();
+  //logo.draw();
   
   //if(keys['m']){
   //  text("Hello M!",800,256);
@@ -150,11 +181,15 @@ void keyTyped(){
   }
   if(key == 't'){
     screenType++;
+    //println(screenType);
+    background(0);
     if(screenType > 5){screenType = 5;}
     clearScreen = true;
   }
   if(key == 'g'){
     screenType--;
+    //println(screenType);
+    background(0);
     if(screenType < 0){screenType = 0;}
     clearScreen = true;
   }

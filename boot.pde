@@ -10,23 +10,25 @@ void hardReset(){//String input){
   regST = 0;
   regWP = 0xFFF0;
   
-  instructionCount = 1;
-  instructionMultiplyer = 1;
+  //instructionCount = 1;
+  //instructionMultiplyer = 1;
+  //instructionCount = 1000;
+  //instructionMultiplyer = 1000;
   instructionDelay = 0;
   delayCount = 0;
   
   workRAM = new RAM(workRAMSize);
   workRAM.pointer = 0;
-  workRAM.contents[regWP + 0x0F] = char(int(random(0,65536)));
+  workRAM.write(regWP + 0x0F, char(int(random(0,65536))));
 
   println("START OF BOOT CODE:");
   print(hex(0) + ": ");
   for(int i = 0; i < programLength; i++){
     //RAM_work.contents[j] = char(b[i] & 0xFF);
     //RAM_work.contents[j] = char((RAM_work.contents[j] << 8) | (b[i+1] & 0xFF));
-    workRAM.contents[i] = char((b[i * 2] << 8) | (b[(i * 2) + 1] & 0xFF));
+    workRAM.write(i, char((b[i * 2] << 8) | (b[(i * 2) + 1] & 0xFF)));
     
-    print(hex(workRAM.contents[i]));
+    print(hex(workRAM.read(i)));
     if(i < programLength - 1){
       print(", ");
       if((i + 1) % 32 == 0){
