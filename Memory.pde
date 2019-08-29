@@ -1,12 +1,12 @@
 RAM workRAM;
 int workRAMSize = 1048576*4;//4 MB of ram?//65536
 
-RAM videoRAM;
+int videoRAMPlace = 65536;
 int videoRAMSize = 65536;
-
-RAM stackRAM;
+int stackRAMPlace = videoRAMPlace + videoRAMSize;
 int stackRAMSize = 65536;//?
 
+int regSP = 0;
 
 class RAM{//RAM
   char contents[];
@@ -27,6 +27,16 @@ class RAM{//RAM
   char pop(){
     pointer--;
     return contents[pointer];
+  }
+  
+  void push(int c_, int pointer_){
+    contents[pointer_] = char(c_);
+    pointer_++;
+  }
+  
+  char pop(int pointer_){
+    pointer_--;
+    return contents[pointer_];
   }
   
   void write(int addr_, char data_){

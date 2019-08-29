@@ -147,7 +147,7 @@ void decodeOpcode(){
       break;
     
     case STOREPIX:
-      videoRAM.contents[workRAM.read(regWP + 0x0F)] = workRAM.read(regWP + data);
+      workRAM.write(videoRAMPlace + workRAM.read(regWP + 0x0F), workRAM.read(regWP + data));
       break;
     
     case ZERO:
@@ -173,11 +173,11 @@ void decodeOpcode(){
       break;
     
     case PUSHREG:
-      stackRAM.push(workRAM.read(regWP + (data & 0x0F)));
+      workRAM.push(workRAM.read(regWP + (data & 0x0F)), regSP);
       break;
     
     case POPREG:
-      workRAM.write(regWP + (data & 0x0F), stackRAM.pop());
+      workRAM.write(regWP + (data & 0x0F), workRAM.pop(regSP));
       break;
     
     case COMPAREREGS:
@@ -185,11 +185,11 @@ void decodeOpcode(){
       break;
     
     case INDSTOREPIX:
-      videoRAM.contents[workRAM.read(regWP + 0x0F)] = workRAM.read(workRAM.read(regWP + data));
+      workRAM.write(videoRAMPlace + workRAM.read(regWP + 0x0F), workRAM.read(workRAM.read(regWP + data)));
       break;
     
     case AIINDSTOREPIX:
-      videoRAM.contents[workRAM.read(regWP + 0x0F)] = workRAM.read(workRAM.read(regWP + data));
+      workRAM.write(videoRAMPlace + workRAM.read(regWP + 0x0F), workRAM.read(workRAM.read(regWP + data)));
       INC(regWP + data);
       break;
     
@@ -203,13 +203,13 @@ void decodeOpcode(){
       break;
     
     case LOADSPRITE:
-      logo = new sprite((int)workRAM.read(workRAM.pointer + 1), workRAM.read(workRAM.pointer) & 0x00FF, (workRAM.read(workRAM.pointer) >> 8) & 0x00FF, (int)data);
+      //logo = new sprite((int)workRAM.read(workRAM.pointer + 1), workRAM.read(workRAM.pointer) & 0x00FF, (workRAM.read(workRAM.pointer) >> 8) & 0x00FF, (int)data);
       incPC();
       incPC();
       break;
     
     case LOADINDA:
-      videoRAM.indA = data;
+      //videoRAM.indA = data;
       break;
   }
 }
@@ -238,7 +238,7 @@ void jump(){
 }
 
 void branch(){
-  stackRAM.push(workRAM.pointer + 1);
+  workRAM.push(workRAM.pointer + 1, regSP);
   workRAM.pointer = workRAM.read(workRAM.pointer);
 }
 
@@ -377,7 +377,7 @@ void decodeSingles(){
       break;
     
     case BRANCHRETURN:
-      workRAM.pointer = stackRAM.pop();
+      workRAM.pointer = workRAM.pop(regSP);
       break;
     
     case KEYINPUT:
@@ -414,18 +414,18 @@ void decodeSingles(){
       incPC();
       break;
     
-    case INDXINC:
-      videoRAM.indX += videoRAM.indA;
-      break;
+    //case INDXINC:
+    //  videoRAM.indX += videoRAM.indA;
+    //  break;
     
-    case INDYINC:
-      videoRAM.indY += videoRAM.indA;
-      break;
+    //case INDYINC:
+    //  videoRAM.indY += videoRAM.indA;
+    //  break;
     
-    case DRAWSPRITE:
-      logo.x = videoRAM.indX;
-      logo.y = videoRAM.indY;
-      logo.draw();
-      break;
+    //case DRAWSPRITE:
+    //  logo.x = videoRAM.indX;
+    //  logo.y = videoRAM.indY;
+    //  logo.draw();
+    //  break;
   }
 }

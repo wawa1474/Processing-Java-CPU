@@ -46,16 +46,16 @@ void hardReset(){//String input){
     //mainRAM.contents[i] = char(int(random(0, 65536)));
   //}
   
-  videoRAM = new RAM(videoRAMSize);
-  for(int i = 0; i < videoRAMSize; i++){
-    videoRAM.contents[i] = char(0x2202);//int(random(0, 65536)));//
-  }
+  //videoRAM = new RAM(videoRAMSize);
+  //for(int i = 0; i < videoRAMSize; i++){
+  //  videoRAM.contents[i] = char(0x2202);//int(random(0, 65536)));//
+  //}
   
-  stackRAM = new RAM(stackRAMSize);
-  stackRAM.pointer = 0;
+  //stackRAM = new RAM(stackRAMSize);
+  //stackRAM.pointer = 0;
   
-  stackRAM.push(char(255));
-  println("stack test: " + (stackRAM.pop() & 0xFF));
+  //stackRAM.push(char(255));
+  //println("stack test: " + (stackRAM.pop() & 0xFF));
   
   instructions = 0;
   

@@ -1,3 +1,11 @@
+int screenType = 0;
+boolean invertScreen = false;
+color screenForegroundColor = screen_Amber;
+color screenBackgroundColor = screen_Black;
+boolean clearScreen = false;
+boolean showAll = true;
+boolean screenSizeChanged = true;
+
 class Background{
   PImage image, image2;
   int x;
@@ -57,6 +65,25 @@ class Background{
     image2 = image;
   }
   
+  void set(char[] data_, int pos_, int length_, int type_){
+    image.loadPixels();
+    int pos;
+    for(int i = 0; i < length_; i++){
+      pos = pos_ + i;
+      switch(type_){
+        case 0:
+          image.pixels[i] = convertMemoryToColor(data_[pos]);
+          break;
+        
+        case 1:
+          image.pixels[i] = convertMemoryToMono(data_[pos]);
+          break;
+      }
+    }
+    image.updatePixels();
+    image2 = image;
+  }
+  
   void clear(char value_){
     image.loadPixels();
     for(int i = 0; i < image.width * image.height; i++){
@@ -97,7 +124,7 @@ color convertMemoryToMono(char memory){
 
 void imageUpdate(){
   while(true){
-    mem.set(workRAM.contents, 0);
-    dis.set(videoRAM.contents, 0);
+    mem.set(workRAM.contents, 0, videoRAMSize, 0);
+    dis.set(workRAM.contents, videoRAMPlace, videoRAMSize, 0);
   }
 }

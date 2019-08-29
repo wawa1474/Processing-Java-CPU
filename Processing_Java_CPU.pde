@@ -93,7 +93,8 @@ void draw(){
   //background(0);
   
   if(clearScreen){
-    clearScreen();
+    mem.clear(char(0));
+    dis.clear(char(0));
     clearScreen = false;
   }
   
@@ -229,22 +230,22 @@ void keyTyped(){
     showAll = !showAll;
     screenSizeChanged = true;
   }
-  if(key == 'h'){
-    logo.setPosition(logo.x,logo.y - 10);
-  }
-  if(key == 'v'){
-    logo.setPosition(logo.x - 10,logo.y);
-  }
-  if(key == 'b'){
-    logo.setPosition(logo.x,logo.y + 10);
-  }
-  if(key == 'n'){
-    logo.setPosition(logo.x + 10,logo.y);
-  }
-  if(key == ','){
-    logo.loopX = !logo.loopX;
-  }
-  if(key == '.'){
-    logo.loopY = !logo.loopY;
-  }
+  //if(key == 'h'){
+  //  logo.setPosition(logo.x,logo.y - 10);
+  //}
+  //if(key == 'v'){
+  //  logo.setPosition(logo.x - 10,logo.y);
+  //}
+  //if(key == 'b'){
+  //  logo.setPosition(logo.x,logo.y + 10);
+  //}
+  //if(key == 'n'){
+  //  logo.setPosition(logo.x + 10,logo.y);
+  //}
+  //if(key == ','){
+  //  logo.loopX = !logo.loopX;
+  //}
+  //if(key == '.'){
+  //  logo.loopY = !logo.loopY;
+  //}
 }
