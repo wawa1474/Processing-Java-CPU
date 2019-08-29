@@ -10,8 +10,8 @@ void hardReset(){//String input){
   regST = 0;
   regWP = 0xFFF0;
   
-  //instructionCount = 1;
-  //instructionMultiplyer = 1;
+  instructionCount = 1;
+  instructionMultiplyer = 1;
   //instructionCount = 1000;
   //instructionMultiplyer = 1000;
   instructionDelay = 0;

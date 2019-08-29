@@ -62,6 +62,8 @@ void setup(){
     test2[i] = i;
   }
   println(test2[int(random(test2.length))]);
+  thread("imageUpdate");
+  //thread("runCPU");
 }
 
 void draw(){
@@ -99,9 +101,9 @@ void draw(){
   //drawScreen();
   //drawMemory();
   
-  mem.set(workRAM.contents, 0);
+  //mem.set(workRAM.contents, 0);
   mem.draw(768, 768);
-  dis.set(videoRAM.contents, 0);
+  //dis.set(videoRAM.contents, 0);
   dis.draw(768, 768);
   
   //logo.setPosition(logo.x + instructionCount,logo.y + instructionMultiplyer);
@@ -126,6 +128,21 @@ void draw(){
   //if(instructionCount > 65536){
   //  hardReset();
   //}
+}
+
+void runCPU(){
+  while(true){
+  if(delayCount >= instructionDelay / frameRate && !CPUHalt){
+    for(int i = 0; i < instructionCount * instructionMultiplyer; i++){
+      fetchOpcode();
+      decodeOpcode();
+      if(CPUHalt == true){i = instructionCount * instructionMultiplyer; /*noLoop();*/ println("CPU Halted!"); println((millis() - programMillis) + " Ms, " + (frameCount - programFrames) + " Frames, " + instructions + " Instructions");}
+      instructions++;
+    }
+    delayCount = 0;
+  }
+  if(instructionDelay != 0){delayCount++;}// delay(1);}
+}
 }
 
 void keyPressed(){

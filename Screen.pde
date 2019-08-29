@@ -1,5 +1,5 @@
 class Background{
-  PImage image;
+  PImage image, image2;
   int x;
   int y;
   
@@ -9,7 +9,7 @@ class Background{
   Background(int x_, int y_, int width_, int height_, int type_){
     x = x_;
     y = y_;
-    image = new PImage(width_, height_, type_);
+    image = image2 = new PImage(width_, height_, type_);
   }
   
   void set(char[] data_){
@@ -24,12 +24,14 @@ class Background{
       image.pixels[i] = data_[i];
     }
     image.updatePixels();
+    image2 = image;
   }
   
   void set(int index_, char data_){
     image.loadPixels();
     image.pixels[index_] = data_;
     image.updatePixels();
+    image2 = image;
   }
   
   void set(char[] data_, int type_){
@@ -52,6 +54,7 @@ class Background{
       }
     }
     image.updatePixels();
+    image2 = image;
   }
   
   void clear(char value_){
@@ -60,18 +63,19 @@ class Background{
       image.pixels[i] = value_;
     }
     image.updatePixels();
+    image2 = image;
   }
   
   void draw(){
-    image(image, x, y);
+    image(image2, x, y);
   }
   
   void draw(int width_, int height_){
-    image(image, x, y, width_, height_);
+    image(image2, x, y, width_, height_);
   }
   
   void draw(int x, int y, int width_, int height_){
-    image(image, x, y, width_, height_);
+    image(image2, x, y, width_, height_);
   }
 }
 
@@ -89,4 +93,11 @@ color convertMemoryToColor(char memory){
 
 color convertMemoryToMono(char memory){
   return ((memory & 0x01) == 0x01)?screenForegroundColor:screenBackgroundColor;
+}
+
+void imageUpdate(){
+  while(true){
+    mem.set(workRAM.contents, 0);
+    dis.set(videoRAM.contents, 0);
+  }
 }
