@@ -82,6 +82,30 @@ d      8192     2000 - DFFF      NONE
 e      16384    4000 - BFFF      NONE
 f      32768    8000 - 7FFF      NONE
 */
+final int FLAG_CARRY = 1;
+final int FLAG_ZERO = 2;
+final int FLAG_BORROW = 4;
+final int FLAG_NEGATIVE = 8;
+
+void setFlag(int flag_){
+  regST |= flag_;
+}
+
+void clearFlag(int flag_){
+  regST &= ~flag_;
+}
+
+void updateFlag(int flag_, boolean value_){
+  if(value_){
+    regST |= flag_;
+  }else{
+    regST &= ~flag_;
+  }
+}
+
+boolean getFlag(int flag_){
+  return (regST & flag_) != 0;
+}
   
 void incPC(){workRAM.pointer++; if(workRAM.pointer >= workRAMSize){workRAM.pointer = 0;}}
 void decPC(){if(workRAM.pointer <= 0){workRAM.pointer = workRAMSize;} workRAM.pointer--;}
