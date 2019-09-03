@@ -2,7 +2,6 @@
 /*
 NOP - No OPeration
 HLT - HaLT
-RET - RETurn from function
 CPUID - returns information about CPU
 */
 
@@ -36,6 +35,7 @@ XOR
 XNOR
 
 NOT
+INVERT
 
 ASL - Arithmetic Shift Left
 ASR - Arithmetic Shift Right
@@ -68,8 +68,8 @@ mainRAM.contents[500] = 0x0001;
   println(hex(mainRAM.contents[500]) + ", " + hex(regST));
 */
 
-//Jumps
-//Set PC
+//Immediate Jumps
+//Set PC to immediate
 /*
 JP EQU - Jump if EQUAL
 JP NEQ - Jump if NOT EQUAL
@@ -156,38 +156,8 @@ JR BC - Jump if Bit Clear
 JR ??
 */
 
-//Function Calls
-//Push PC, Set PC
-/*
-CALL EQU - Call Function if EQUAL
-CALL NEQ - Call Function if NOT EQUAL
-
-CALL GT - Call Function if GREATER THAN
-CALL LT - Call Function if LESS THAN
-
-CALL GE - Call Function if GREATER THAN OR EQUAL
-CALL LE - Call Function if LESS THAN OR EQUAL
-
-CALL C  - Call Function if CARRY
-CALL NC - Call Function if NOT CARRY
-
-CALL B  - Call Function if BORROW
-CALL NB - Call Function if NOT BORROW
-
-CALL Z  - Call Function if ZERO
-CALL NZ - Call Function if NOT ZERO
-
-CALL    - Call Function UNCONDITIONALY
-
-CALL BS - Call Function if Bit Set
-CALL BC - Call Function if Bit Clear
-
-
-Call Function ??
-*/
-
-//Indirect Calls
-//Push PC, Set PC to value at memory location pointed to by register
+//Immediate Calls
+//Push PC, Set PC to immediate
 /*
 CALL EQU - Call Function if EQUAL
 CALL NEQ - Call Function if NOT EQUAL
@@ -276,8 +246,32 @@ CALL BC - Call Function if Bit Clear
 Call Function ??
 */
 
-/*
-function returns
 
-rtn - all the same as the jumps
+//Pop PC
+/*
+RTN EQU - Return From Function if EQUAL
+RTN NEQ - Return From Function if NOT EQUAL
+
+RTN GT - Return From Function if GREATER THAN
+RTN LT - Return From Function if LESS THAN
+
+RTN GE - Return From Function if GREATER THAN OR EQUAL
+RTN LE - Return From Function if LESS THAN OR EQUAL
+
+RTN C  - Return From Function if CARRY
+RTN NC - Return From Function if NOT CARRY
+
+RTN B  - Return From Function if BORROW
+RTN NB - Return From Function if NOT BORROW
+
+RTN Z  - Return From Function if ZERO
+RTN NZ - Return From Function if NOT ZERO
+
+RTN    - Return From Function UNCONDITIONALY
+
+RTN BS - Return From Function if Bit Set
+RTN BC - Return From Function if Bit Clear
+
+
+RTN Function ??
 */

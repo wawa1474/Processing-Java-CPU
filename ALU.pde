@@ -155,7 +155,7 @@ void DEC(int addr_){
 void ADD(char a, char b){//ADDition
   //println("ADD");
   int tmp = a + b;
-  workRAM.write(regWP, char(tmp));
+  workRAM.write(regWP, char(tmp & 0xFFFF));
   if(tmp > 65535){
     regST |= 0x0001;
     //print("Carry!");
@@ -191,7 +191,7 @@ void ADD(char a, char b){//ADDition
 void ADDI(char reg, char imm){//ADDition
   //println("ADD");
   int tmp = workRAM.read(regWP + (reg & 0x0F)) + imm;
-  workRAM.write(regWP + (reg & 0x0F), char(tmp));
+  workRAM.write(regWP + (reg & 0x0F), char(tmp & 0xFFFF));
   if(tmp > 65535){
     regST |= 0x0001;
     //print("Carry!");
@@ -209,7 +209,7 @@ void ADDI(char reg, char imm){//ADDition
 void SUB(char a, char b){//SUBtraction
   //println("SUB");
   int tmp = a - b;
-  workRAM.write(regWP, char(tmp));
+  workRAM.write(regWP, char(tmp & 0xFFFF));
   if(tmp < 0){//A < B
     regST |= 0x0004;
     //print("BORROW!");
@@ -257,31 +257,34 @@ void bitTest(int word, int bit){
 }
 
 void bitTestSet(int word, int bit){
-  if((workRAM.read(word) & (0x01 << bit)) != 0){
+  int tmp = workRAM.read(word);
+  if((tmp & (0x01 << bit)) != 0){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  workRAM.write(word, char(workRAM.read(word) | (1 << bit)));
+  workRAM.write(word, char(tmp | (1 << bit)));
 }
 
 void bitTestReset(int word, int bit){
-  if((workRAM.read(word) & (0x01 << bit)) != 0){
+  int tmp = workRAM.read(word);
+  if((tmp & (0x01 << bit)) != 0){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  workRAM.write(word, char(workRAM.read(word) & (1 << bit)));
+  workRAM.write(word, char(tmp & (1 << bit)));
 }
 
 void bitTestInvert(int word, int bit){
-  if((workRAM.read(word) & (0x01 << bit)) != 0){
+  int tmp = workRAM.read(word);
+  if((tmp & (0x01 << bit)) != 0){
     regST |= 0x0001;
     //print("Carry!");
   }else{
     regST &= 0xFFFE;
   }
-  workRAM.write(word, char(workRAM.read(word) ^ (1 << bit)));
+  workRAM.write(word, char(tmp ^ (1 << bit)));
 }
