@@ -84,6 +84,25 @@ class Background{
     image2 = image;
   }
   
+  void set(int pos_, int length_, int type_){
+    image.loadPixels();
+    int pos;
+    for(int i = 0; i < length_; i++){
+      pos = pos_ + i;
+      switch(type_){
+        case 0:
+          image.pixels[i] = convertMemoryToColor(workRAM.contents[pos]);
+          break;
+        
+        case 1:
+          image.pixels[i] = convertMemoryToMono(workRAM.contents[pos]);
+          break;
+      }
+    }
+    image.updatePixels();
+    image2 = image;
+  }
+  
   void clear(char value_){
     image.loadPixels();
     for(int i = 0; i < image.width * image.height; i++){
@@ -107,6 +126,9 @@ class Background{
 }
 
 color convertMemoryToColor(char memory){
+  if(memory == 0xFFFF){
+    return screen_WHITE;
+  }
   int tempB = memory >> 4;
   int tempR = (tempB >> 4);
   tempB = tempB & 0xF0;

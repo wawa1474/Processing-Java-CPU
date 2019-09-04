@@ -211,6 +211,16 @@ void decodeOpcode(){
     case LOADINDA:
       //videoRAM.indA = data;
       break;
+    
+    case CLRSCREEN:
+      //videoRAM.indA = data;
+      println("CLRSCREEN");
+      tmp = workRAM.read(workRAM.pointer);
+      incPC();
+      for(int i = 0; i < videoRAMSize; i++){
+        workRAM.write(videoRAMPlace + i, tmp);
+      }
+      break;
   }
 }
 

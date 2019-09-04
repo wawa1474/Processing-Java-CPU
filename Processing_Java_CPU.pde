@@ -1,6 +1,7 @@
 color screen_Green = color(0,255,0);
 color screen_Amber = #FFCC00;
 color screen_Black = color(0);
+color screen_WHITE = color(255);
 final int kilo_Word = 1024;
 final int kilo_Byte_Int = kilo_Word / 4;
 
@@ -33,7 +34,7 @@ int instructions = 0;
 
 Background mem;
 Background dis;
-boolean autoLoad = true;
+boolean autoLoad = false;
 
 int[] test2 = new int[4 * mega_Word];
 
@@ -62,7 +63,7 @@ void setup(){
     test2[i] = i;
   }
   println(test2[int(random(test2.length))]);
-  thread("imageUpdate");
+  //thread("imageUpdate");
   //thread("runCPU");
 }
 
@@ -101,6 +102,9 @@ void draw(){
   //thread("drawScreen");
   //drawScreen();
   //drawMemory();
+  
+  mem.set(0, videoRAMSize, 0);
+  dis.set(videoRAMPlace, videoRAMSize, 0);
   
   //mem.set(workRAM.contents, 0);
   mem.draw(768, 768);
