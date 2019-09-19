@@ -124,50 +124,30 @@ void ROTATERIGHT(char a_){
 }
 
 void INC(int addr_){
-  if(workRAM.read(addr_) == 65535){
-    regST |= 0x0001;
-    //print("Carry!");
-    regST |= 0x0002;
-    //print("Zero!");
-  }else{
-    regST &= 0xFFFE;
-    regST &= 0xFFFD;
-  }
-  workRAM.write(addr_, char(workRAM.read(addr_) + 1));
+  char value = workRAM.read(addr_);
+  boolean zero = (value == 65535);
+  updateFlag(FLAG_CARRY, zero);
+  updateFlag(FLAG_ZERO, zero);
+  workRAM.write(addr_, char(value + 1));
 }
 
 void DEC(int addr_){
-  if(workRAM.read(addr_) == 0){
-    regST |= 0x0004;
-    //print("BORROW!");
-  }else{
-    regST &= 0xFFFB;
-  }
-  workRAM.write(addr_, char(workRAM.read(addr_) - 1));
-  if(workRAM.read(addr_) == 0){
-    regST |= 0x0002;
-    //print("Zero!");
-  }else{
-    regST &= 0xFFFD;
-  }
+  char value = workRAM.read(addr_);
+  boolean borrow = value == 0;
+  updateFlag(FLAG_BORROW, borrow);
+  workRAM.write(addr_, char(value - 1));
+  boolean zero = (value == 0);
+  updateFlag(FLAG_ZERO, zero);
 }
 
 void ADD(char a, char b){//ADDition
   //println("ADD");
   int tmp = a + b;
   workRAM.write(regWP, char(tmp & 0xFFFF));
-  if(tmp > 65535){
-    regST |= 0x0001;
-    //print("Carry!");
-  }else{
-    regST &= 0xFFFE;
-  }
-  if((tmp & 0xFFFF) == 0){
-    regST |= 0x0002;
-    //print("Zero!");
-  }else{
-    regST &= 0xFFFD;
-  }
+  boolean carry = (tmp > 65535);
+  updateFlag(FLAG_CARRY, carry);
+  boolean zero = ((tmp & 0xFFFF) == 0);
+  updateFlag(FLAG_ZERO, zero);
 }
 
 //void ADD(char out, char a, char b){//ADDition
@@ -190,101 +170,58 @@ void ADD(char a, char b){//ADDition
 
 void ADDI(char reg, char imm){//ADDition
   //println("ADD");
-  int tmp = workRAM.read(regWP + (reg & 0x0F)) + imm;
-  workRAM.write(regWP + (reg & 0x0F), char(tmp & 0xFFFF));
-  if(tmp > 65535){
-    regST |= 0x0001;
-    //print("Carry!");
-  }else{
-    regST &= 0xFFFE;
-  }
-  if((tmp & 0xFFFF) == 0){
-    regST |= 0x0002;
-    //print("Zero!");
-  }else{
-    regST &= 0xFFFD;
-  }
+  int addr = regWP + (reg & 0x0F);
+  int tmp = workRAM.read(addr) + imm;
+  workRAM.write(addr, char(tmp & 0xFFFF));
+  boolean carry = (tmp > 65535);
+  updateFlag(FLAG_CARRY, carry);
+  boolean zero = ((tmp & 0xFFFF) == 0);
+  updateFlag(FLAG_ZERO, zero);
 }
 
 void SUB(char a, char b){//SUBtraction
   //println("SUB");
   int tmp = a - b;
   workRAM.write(regWP, char(tmp & 0xFFFF));
-  if(tmp < 0){//A < B
-    regST |= 0x0004;
-    //print("BORROW!");
-  }else{
-    regST &= 0xFFFB;//A > B
-  }
-  if((tmp & 0xFFFF) == 0){
-    regST |= 0x0002;//A == B
-    //print("Zero!");
-  }else{
-    regST &= 0xFFFD;//A != B
-  }
+  boolean borrow = (tmp < 0);
+  updateFlag(FLAG_BORROW, borrow);
+  boolean zero = ((tmp & 0xFFFF) == 0);
+  updateFlag(FLAG_ZERO, zero);
 }
 
 void COMPARE(char a, char b){//Compare
   int add = a + b;
   int sub = a - b;
-  if(add > 65535){
-    regST |= 0x0001;
-    //print("Carry!");
-  }else{
-    regST &= 0xFFFE;
-  }
-  if(sub < 0){
-    regST |= 0x0004;//A < B
-    //print("BORROW!");
-  }else{
-    regST &= 0xFFFB;//A > B
-  }
-  if(sub == 0){
-    regST |= 0x0002;//A == B
-    //print("Zero!");
-  }else{
-    regST &= 0xFFFD;//A != B
-  }
+  boolean carry = (add > 65535);//carry
+  updateFlag(FLAG_CARRY, carry);
+  boolean borrow = (sub < 0);//A < B, A > B
+  updateFlag(FLAG_BORROW, borrow);
+  boolean zero = (sub == 0);//A == B, A != B
+  updateFlag(FLAG_ZERO, zero);
 }
 
 void bitTest(int word, int bit){
-  if((workRAM.read(word) & (0x01 << bit)) != 0){
-    regST |= 0x0001;
-    //print("Carry!");
-  }else{
-    regST &= 0xFFFE;
-  }
+  boolean bitTest = ((workRAM.read(word) & (0x01 << bit)) != 0);//carry
+  updateFlag(FLAG_CARRY, bitTest);
 }
 
 void bitTestSet(int word, int bit){
   int tmp = workRAM.read(word);
-  if((tmp & (0x01 << bit)) != 0){
-    regST |= 0x0001;
-    //print("Carry!");
-  }else{
-    regST &= 0xFFFE;
-  }
+  boolean bitTest = ((tmp & (0x01 << bit)) != 0);//carry
+  updateFlag(FLAG_CARRY, bitTest);
   workRAM.write(word, char(tmp | (1 << bit)));
 }
 
 void bitTestReset(int word, int bit){
   int tmp = workRAM.read(word);
-  if((tmp & (0x01 << bit)) != 0){
-    regST |= 0x0001;
-    //print("Carry!");
-  }else{
-    regST &= 0xFFFE;
-  }
+  boolean bitTest = ((tmp & (0x01 << bit)) != 0);//carry
+  updateFlag(FLAG_CARRY, bitTest);
   workRAM.write(word, char(tmp & (1 << bit)));
 }
 
 void bitTestInvert(int word, int bit){
   int tmp = workRAM.read(word);
-  if((tmp & (0x01 << bit)) != 0){
-    regST |= 0x0001;
-    //print("Carry!");
-  }else{
-    regST &= 0xFFFE;
-  }
+  boolean bitTest = ((tmp & (0x01 << bit)) != 0);//carry
+  updateFlag(FLAG_CARRY, bitTest);
   workRAM.write(word, char(tmp ^ (1 << bit)));
 }

@@ -86,7 +86,7 @@ class RAM{//RAM
 //RAM_stack.pointer - Stack Pointer
 //RAM_video.pointer - ?
 
-//16 byte aligned
+//16 byte aligned?
 int regWP;//Workspace Pointer Register
 
 int regAM;//Adressing Mode Register
@@ -97,7 +97,7 @@ have some amount of addressing mode information be part of the opcodes
 but keep it to a minimum number of bits (2-4?)
 */
 
-int regST;//Status Register
+final int regST = 15;//Status Register
 /*
 BIT    VALUE    HEX    INVERSE   MEANING
 0      1        0001 - FFFE      Carry
@@ -122,24 +122,23 @@ final int FLAG_ZERO = 2;
 final int FLAG_BORROW = 4;
 final int FLAG_NEGATIVE = 8;
 
-void setFlag(int flag_){
-  regST |= flag_;
-}
-
-void clearFlag(int flag_){
-  regST &= ~flag_;
-}
-
 void updateFlag(int flag_, boolean value_){
+  char tmp = workRAM.read(regWP + regST);
   if(value_){
-    regST |= flag_;
+    tmp |= flag_;
   }else{
-    regST &= ~flag_;
+    tmp &= ~flag_;
   }
+  workRAM.write(regWP + regST, tmp);
 }
 
 boolean getFlag(int flag_){
-  return (regST & flag_) != 0;
+  char tmp = workRAM.read(regWP + regST);
+  return (tmp & flag_) != 0;
+}
+
+void clearFlags(){
+  workRAM.write(regWP + regST, char(0)); 
 }
   
 void incPC(){workRAM.pointer++; if(workRAM.pointer >= workRAMSize){workRAM.pointer = 0;}}

@@ -264,7 +264,7 @@ void decodeSingles(){
       break;
     
     case JUMPCARRY:
-      if((regST & 0x0001) == 0x0001){
+      if(getFlag(FLAG_CARRY)){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         jump();
         break;
@@ -278,7 +278,7 @@ void decodeSingles(){
       break;
     
     case JUMPNCARRY:
-      if((regST & 0x0001) != 0x0001){
+      if(!getFlag(FLAG_CARRY)){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         jump();
         break;
@@ -292,7 +292,7 @@ void decodeSingles(){
       break;
     
     case JUMPZERO:
-      if((regST & 0x0002) == 0x0002){
+      if(getFlag(FLAG_ZERO)){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         jump();
         break;
@@ -301,7 +301,7 @@ void decodeSingles(){
       break;
     
     case JUMPNZERO:
-      if((regST & 0x0002) != 0x0002){
+      if(!getFlag(FLAG_ZERO)){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         jump();
         break;
@@ -310,7 +310,7 @@ void decodeSingles(){
       break;
     
     case JUMPBORROW:
-      if((regST & 0x0004) == 0x0004){
+      if(getFlag(FLAG_BORROW)){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         jump();
         break;
@@ -319,7 +319,7 @@ void decodeSingles(){
       break;
     
     case JUMPNBORROW:
-      if((regST & 0x0004) != 0x0004){
+      if(!getFlag(FLAG_BORROW)){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         jump();
         break;
@@ -328,7 +328,7 @@ void decodeSingles(){
       break;
     
     case BRANCHCARRY:
-      if((regST & 0x0001) == 0x0001){
+      if(getFlag(FLAG_CARRY)){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         branch();
         break;
@@ -342,7 +342,7 @@ void decodeSingles(){
       break;
     
     case BRANCHNCARRY:
-      if((regST & 0x0001) != 0x0001){
+      if(!getFlag(FLAG_CARRY)){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         branch();
         break;
@@ -351,7 +351,7 @@ void decodeSingles(){
       break;
     
     case BRANCHZERO:
-      if((regST & 0x0002) == 0x0002){
+      if(getFlag(FLAG_ZERO)){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         branch();
         break;
@@ -360,7 +360,7 @@ void decodeSingles(){
       break;
     
     case BRANCHNZERO:
-      if((regST & 0x0002) != 0x0002){
+      if(!getFlag(FLAG_ZERO)){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         branch();
         break;
@@ -369,7 +369,7 @@ void decodeSingles(){
       break;
     
     case BRANCHBORROW:
-      if((regST & 0x0004) == 0x0004){
+      if(getFlag(FLAG_BORROW)){
         //println("Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         branch();
         break;
@@ -378,7 +378,7 @@ void decodeSingles(){
       break;
     
     case BRANCHNBORROW:
-      if((regST & 0x0004) != 0x0004){
+      if(!getFlag(FLAG_BORROW)){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         branch();
         break;
@@ -391,12 +391,8 @@ void decodeSingles(){
       break;
     
     case KEYINPUT:
-      if(keys[workRAM.read(workRAM.pointer)] == true){
-        regST |= 0x0002;//set zero flag
-        //println(int(mainRAM.contents[RAM_main.pointer]));
-      }else{
-        regST &= 0xFFFD;//clear zero flag
-      }
+      boolean value = (keys[workRAM.read(workRAM.pointer)] == true);
+      updateFlag(FLAG_CARRY, value);
       incPC();
       break;
     
@@ -409,7 +405,7 @@ void decodeSingles(){
       break;
 
     case SKIPZERO:
-      if((regST & 0x0002) != 0x0002){
+      if(!getFlag(FLAG_ZERO)){
         //println("Not Carry: Jump -> " + hex(mainRAM.contents[RAM_main.pointer]));
         incPC();
       }

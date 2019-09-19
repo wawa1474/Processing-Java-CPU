@@ -7,8 +7,8 @@ void hardReset(){//String input){
   byte b[] = loadBytes(inputFile);
   programLength = b.length / 2;
   
-  regST = 0;
   regWP = 0xFFF0;
+  clearFlags();
   
   instructionCount = 1;
   instructionMultiplyer = 1;
@@ -72,8 +72,9 @@ void hardReset(){//String input){
 
 void softReset(){
   workRAM.pointer = 0;
-  regST = 0;
+
   regWP = 0xFFF0;
+  clearFlags();
   
   instructions = 0;
 }
