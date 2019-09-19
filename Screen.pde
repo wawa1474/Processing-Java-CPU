@@ -105,8 +105,9 @@ class Background{
   
   void clear(char value_){
     image.loadPixels();
+    color tmp = convertMemoryToColor(value_);
     for(int i = 0; i < image.width * image.height; i++){
-      image.pixels[i] = value_;
+      image.pixels[i] = tmp;
     }
     image.updatePixels();
     image2 = image;
@@ -130,10 +131,10 @@ color convertMemoryToColor(char memory){
     return screen_WHITE;
   }
   int tempB = memory >> 4;
-  int tempR = (tempB >> 4);
+  int tempR = (tempB >> 4) & 0xF0;
   tempB = tempB & 0xF0;
   int tempG = memory & 0xFF;
-  color pixelColor = color(tempR, tempG, tempB);
+  color pixelColor = color(tempR==0xF0?0xFF:tempR, tempG, tempB==0xF0?0xFF:tempB);
   if(invertScreen){
     pixelColor = pixelColor ^ color(255);
   }

@@ -253,3 +253,7 @@ void keyTyped(){
   //  logo.loopY = !logo.loopY;
   //}
 }
+
+void mousePressed(){
+  //workRAM.roll(2, 260);
+}

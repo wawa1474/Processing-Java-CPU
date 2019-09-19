@@ -21,6 +21,14 @@ have all memory be in the "main memory"
   video ram
   keyboard
   disk
+  stack
+    push
+    pop
+    peek
+    update
+    roll
+    size
+    empty
 
 
 jumps
@@ -31,8 +39,13 @@ jumps
 
 
 thread(cpu);//central processing unit
+  allow multiple cpus?
+    do they all use the same memory or do they have some of their own?
+    whats the max # of cpus?
+    can one halt itself and be reset/restarted by another?
 thread(apu);//audio processing unit
 thread(gpu);//graphics processing unit
+  do we use redraw()?
 thread(disk);//file reading/writing
 
 
@@ -74,6 +87,23 @@ void master(){
   }
 }
 
+//float x = 0;
+
+//void setup() {
+//  size(200, 200);
+//  noLoop();
+//}
+
+//void draw() {
+//  background(204);
+//  line(x, 0, x, height); 
+//}
+
+//void mousePressed() {
+//  x += 1;
+//  redraw();
+//}
+
 
 //void setup(){
 //  PImage image = loadImage("font.png");
@@ -81,16 +111,6 @@ void master(){
 //  int length_ = image.width * image.height;
 //  byte[] output = new byte[length_ * 2];
 //  int pos = 0;
-//  //for(int i = 0; i < length_; i++){
-//  //  color pix = image.pixels[i];
-//  //  //color p = image.get(i, pos);
-//  //  int red = (pix >> 16) & 0xF0;
-//  //  int blue = (pix >> 12) & 0x0F;
-//  //  int green = (pix >> 8) & 0xFF;
-//  //  output[pos] = byte(red | blue);
-//  //  output[pos + 1] = byte(green);
-//  //  pos += 2;
-//  //}
 //  for(int character = 0; character < image.width; character++){
 //    for(int y = (character / 32) * 8; y < ((character / 32) * 8) + 8; y++){
 //      for(int x = (character * 8) % image.width; x < ((character * 8) % image.width) + 8; x++){
@@ -105,5 +125,19 @@ void master(){
 //    }
 //  }
 //  saveBytes("font.bin", output);
+  
+//  output = new byte[length_ / 8];
+//  pos = 0;
+//  for(int character = 0; character < image.width; character++){
+//    for(int y = (character / 32) * 8; y < ((character / 32) * 8) + 8; y++){
+//      output[pos/8] = byte(0);
+//      for(int x = (character * 8) % image.width; x < ((character * 8) % image.width) + 8; x++){
+//        color pix = image.get(x, y);
+//        output[pos / 8] |= byte(pix != 0xFF000000?1<<7-(pos%8):0);
+//        pos++;
+//      }
+//    }
+//  }
+//  saveBytes("fontbin.bin", output);
 //  exit();
 //}

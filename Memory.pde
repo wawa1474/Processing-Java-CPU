@@ -1,5 +1,5 @@
 RAM workRAM;
-int workRAMSize = 1048576*4;//4 MB of ram?//65536
+int workRAMSize = 1 * mega_Word;//1 MB of ram?//65536
 
 int videoRAMPlace = 65536;
 int videoRAMSize = 65536;
@@ -39,6 +39,40 @@ class RAM{//RAM
     return contents[pointer_];
   }
   
+  void update(int c_, int pointer_){
+    contents[pointer_] = char(c_);
+  }
+  
+  char peek(int pointer_){
+    return contents[pointer_];
+  }
+  
+  //void roll(int amount_, int pointer_) {
+  //  if (amount_ == 0){
+  //    return;
+  //  }
+
+  //  int index = pointer_ - amount_ - 1;
+  //  if (0 <= index && index < pointer_) {
+  //      char newTop = splice(index, 1, pointer_)[0];
+  //      push(newTop, pointer_);
+  //  }// else
+  //      //throw "Attempted to roll more elements than in stack " + position_ + ": " + name;
+  //  //};
+  //}
+  
+  //char[] splice(int position_, int amount_, int pointer_){
+  //  char[] output = new char[amount_];
+  //  for(int i = position_; i < position_ + amount_ && i < pointer_; i++){
+  //    output[i - position_] = contents[i];
+  //  }
+  //  for(int i = position_; i < pointer_ - amount_; i++){
+  //    contents[i] = contents[i + amount_];
+  //  }
+  //  pointer_ -= amount_ + 1;
+  //  return output;
+  //}
+  
   void write(int addr_, char data_){
     contents[addr_] = data_;
   }
@@ -52,6 +86,7 @@ class RAM{//RAM
 //RAM_stack.pointer - Stack Pointer
 //RAM_video.pointer - ?
 
+//16 byte aligned
 int regWP;//Workspace Pointer Register
 
 int regAM;//Adressing Mode Register

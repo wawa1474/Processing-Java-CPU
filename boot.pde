@@ -20,6 +20,7 @@ void hardReset(){//String input){
   workRAM = new RAM(workRAMSize);
   workRAM.pointer = 0;
   workRAM.write(regWP + 0x0F, char(int(random(0,65536))));
+  
 
   println("START OF BOOT CODE:");
   print(hex(0) + ": ");
@@ -63,6 +64,10 @@ void hardReset(){//String input){
   programFrames = frameCount;
   
   fileSelected = true;
+  
+  for(int i = 256; i < 260; i++){
+    workRAM.contents[i] = char(int(random(0, 16) * 4096));
+  }
 }
 
 void softReset(){
