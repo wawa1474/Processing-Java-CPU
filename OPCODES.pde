@@ -60,6 +60,47 @@ static final int INDXINC = 24;//18
 static final int INDYINC = 25;//19
 static final int DRAWSPRITE = 26;//1A
 
+/*JP EQU - Jump if EQUAL
+JP NEQ - Jump if NOT EQUAL
+
+JP GT - Jump if GREATER THAN
+JP LT - Jump if LESS THAN
+
+JP GE - Jump if GREATER THAN OR EQUAL
+JP LE - Jump if LESS THAN OR EQUAL
+
+JP C  - Jump if CARRY
+JP NC - Jump if NOT CARRY
+
+JP B  - Jump if BORROW
+JP NB - Jump if NOT BORROW
+
+JP Z  - Jump if ZERO
+JP NZ - Jump if NOT ZERO
+
+JP    - Jump UNCONDITIONALY
+
+JP BS - Jump if Bit Set
+JP BC - Jump if Bit Clear
+
+JP ??*/
+final int jump_UNC = 0;//ALWAYS
+final int jump_NEV = 1;//NEVER
+final int jump_C = 2;//if CARRY
+final int jump_NC = 3;//if NOT CARRY
+final int jump_Z = 4;//if ZERO
+final int jump_NZ = 5;//if NOT ZERO
+final int jump_B = 6;//if BORROW
+final int jump_NB = 7;//if NOT BORROW
+final int jump_PLS = 8;//if POSITIVE
+final int jump_MIN = 9;//if NEGEATIVE
+final int jump_GT = 10;//if GREATER THAN
+final int jump_LS = 11;//if LESS THAN
+final int jump_GTE = 12;//if GREATER THAN OR EQUAL
+final int jump_LTE = 13;//if LESS THAN OR EQUAL
+final int jump_NN = 14;//NOT IMPLEMENTED
+final int jump_NNN = 15;//NOT IMPLEMENTED
+
 //Doubles Names
 String opcodeDNames[] = {"SINGLES", "AND", "LOAD", "PRINT", "PRNTA", "ADD", "COPY", "INSC", "INSM", "INSD", "COMPARE", "STORE", "STORE REGISTER",
                          "INCREMENT", "DECREMENT", "STORE PIXEL", "ZERO", "LOAD DATA", "ADD IMMEDIATE","x","c","v","b","a"};

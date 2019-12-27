@@ -7,7 +7,7 @@ boolean showAll = true;
 boolean screenSizeChanged = true;
 
 class Background{
-  PImage image, image2;
+  PImage buffer, image;
   int x;
   int y;
   
@@ -17,112 +17,112 @@ class Background{
   Background(int x_, int y_, int width_, int height_, int type_){
     x = x_;
     y = y_;
-    image = image2 = new PImage(width_, height_, type_);
+    buffer = image = new PImage(width_, height_, type_);
   }
   
   void set(char[] data_){
-    image.loadPixels();
+    buffer.loadPixels();
     int l;
-    if(data_.length > image.width * image.height){
-      l = image.width * image.height;
+    if(data_.length > buffer.width * buffer.height){
+      l = buffer.width * buffer.height;
     }else{
       l = data_.length;
     }
     for(int i = 0; i < l; i++){
-      image.pixels[i] = data_[i];
+      buffer.pixels[i] = data_[i];
     }
-    image.updatePixels();
-    image2 = image;
+    buffer.updatePixels();
+    image = buffer;
   }
   
   void set(int index_, char data_){
-    image.loadPixels();
-    image.pixels[index_] = data_;
-    image.updatePixels();
-    image2 = image;
+    buffer.loadPixels();
+    buffer.pixels[index_] = data_;
+    buffer.updatePixels();
+    image = buffer;
   }
   
   void set(char[] data_, int type_){
-    image.loadPixels();
+    buffer.loadPixels();
     int l;
-    if(data_.length > image.width * image.height){
-      l = image.width * image.height;
+    if(data_.length > buffer.width * buffer.height){
+      l = buffer.width * buffer.height;
     }else{
       l = data_.length;
     }
     for(int i = 0; i < l; i++){
       switch(type_){
         case 0:
-          image.pixels[i] = convertMemoryToColor(data_[i]);
+          buffer.pixels[i] = convertMemoryToColor(data_[i]);
           break;
         
         case 1:
-          image.pixels[i] = convertMemoryToMono(data_[i]);
+          buffer.pixels[i] = convertMemoryToMono(data_[i]);
           break;
       }
     }
-    image.updatePixels();
-    image2 = image;
+    buffer.updatePixels();
+    image = buffer;
   }
   
   void set(char[] data_, int pos_, int length_, int type_){
-    image.loadPixels();
+    buffer.loadPixels();
     int pos;
     for(int i = 0; i < length_; i++){
       pos = pos_ + i;
       switch(type_){
         case 0:
-          image.pixels[i] = convertMemoryToColor(data_[pos]);
+          buffer.pixels[i] = convertMemoryToColor(data_[pos]);
           break;
         
         case 1:
-          image.pixels[i] = convertMemoryToMono(data_[pos]);
+          buffer.pixels[i] = convertMemoryToMono(data_[pos]);
           break;
       }
     }
-    image.updatePixels();
-    image2 = image;
+    buffer.updatePixels();
+    image = buffer;
   }
   
   void set(int pos_, int length_, int type_){
-    image.loadPixels();
+    buffer.loadPixels();
     int pos;
     for(int i = 0; i < length_; i++){
       pos = pos_ + i;
       switch(type_){
         case 0:
-          image.pixels[i] = convertMemoryToColor(workRAM.contents[pos]);
+          buffer.pixels[i] = convertMemoryToColor(workRAM.contents[pos]);
           break;
         
         case 1:
-          image.pixels[i] = convertMemoryToMono(workRAM.contents[pos]);
+          buffer.pixels[i] = convertMemoryToMono(workRAM.contents[pos]);
           break;
       }
     }
-    image.updatePixels();
-    image2 = image;
+    buffer.updatePixels();
+    image = buffer;
   }
   
   void clear(char value_){
-    image.loadPixels();
+    buffer.loadPixels();
     color tmp = convertMemoryToColor(value_);
-    for(int i = 0; i < image.width * image.height; i++){
-      image.pixels[i] = tmp;
+    for(int i = 0; i < buffer.width * buffer.height; i++){
+      buffer.pixels[i] = tmp;
     }
-    image.updatePixels();
-    image2 = image;
+    buffer.updatePixels();
+    image = buffer;
   }
   
   void draw(){
-    image(image2, x, y);
+    image(image, x, y);
   }
   
   void draw(int width_, int height_){
-    image(image2, x, y, width_, height_);
+    image(image, x, y, width_, height_);
   }
   
   void draw(int x, int y, int width_, int height_){
-    image(image2, x, y, width_, height_);
+    image(image, x, y, width_, height_);
   }
 }
 

@@ -104,9 +104,9 @@ BIT    VALUE    HEX    INVERSE   MEANING
 1      2        0002 - FFFD      Zero
 2      4        0004 - FFFB      Borrow
 3      8        0008 - FFF7      Negative
-4      16       0010 - FFEF      Half Carry
-5      32       0020 - FFDF      Quarter Carry
-6      64       0040 - FFBF      Three-Quarter Carry
+4      16       0010 - FFEF      Sign
+5      32       0020 - FFDF      Greater
+6      64       0040 - FFBF      NONE
 7      128      0080 - FF7F      NONE
 8      256      0100 - FEFF      NONE
 9      512      0200 - FDFF      NONE
@@ -121,6 +121,8 @@ final int FLAG_CARRY = 1;
 final int FLAG_ZERO = 2;
 final int FLAG_BORROW = 4;
 final int FLAG_NEGATIVE = 8;
+final int FLAG_SIGN = 16;
+final int FLAG_GREATER = 16;
 
 void updateFlag(int flag_, boolean value_){
   char tmp = workRAM.read(regWP + regST);
