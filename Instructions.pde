@@ -253,22 +253,22 @@ void branch(){
 }
 
 
-void needJumps(){
-  switch(data){
-    case jump_UNC: break;
-    case jump_NEV: return;
-    case jump_C:   if(getFlag(FLAG_CARRY)){break;}else{return;}
-    case jump_NC:  if(!getFlag(FLAG_CARRY)){break;}else{return;}
-    case jump_Z:   if(getFlag(FLAG_ZERO)){break;}else{return;}
-    case jump_NZ:  if(!getFlag(FLAG_ZERO)){break;}else{return;}
-    case jump_B:   if(getFlag(FLAG_BORROW)){break;}else{return;}
-    case jump_NB:  if(!getFlag(FLAG_BORROW)){break;}else{return;}
-    case jump_PLS: if(!getFlag(FLAG_SIGN)){break;}else{return;}
-    case jump_MIN: if(getFlag(FLAG_SIGN)){break;}else{return;}
-    case jump_GT:  if(getFlag(FLAG_GREATER)){break;}else{return;}
-    case jump_LS:  if(!getFlag(FLAG_GREATER)){break;}else{return;}
-    case jump_GTE: if(getFlag(FLAG_GREATER) || getFlag(FLAG_ZERO)){break;}else{return;}
-    case jump_LTE: if(!getFlag(FLAG_GREATER) || getFlag(FLAG_ZERO)){break;}else{return;}
+void needJumps(int condition_, int jumpType_){
+  switch(condition_){
+    case condition_UNC: break;
+    case condition_NEV: return;
+    case condition_C:   if(getFlag(FLAG_CARRY)){break;}else{return;}
+    case condition_NC:  if(!getFlag(FLAG_CARRY)){break;}else{return;}
+    case condition_Z:   if(getFlag(FLAG_ZERO)){break;}else{return;}
+    case condition_NZ:  if(!getFlag(FLAG_ZERO)){break;}else{return;}
+    case condition_B:   if(getFlag(FLAG_BORROW)){break;}else{return;}
+    case condition_NB:  if(!getFlag(FLAG_BORROW)){break;}else{return;}
+    case condition_PLS: if(!getFlag(FLAG_SIGN)){break;}else{return;}
+    case condition_MIN: if(getFlag(FLAG_SIGN)){break;}else{return;}
+    case condition_GT:  if(getFlag(FLAG_GREATER)){break;}else{return;}
+    case condition_LS:  if(!getFlag(FLAG_GREATER)){break;}else{return;}
+    case condition_GTE: if(getFlag(FLAG_GREATER) || getFlag(FLAG_ZERO)){break;}else{return;}
+    case condition_LTE: if(!getFlag(FLAG_GREATER) || getFlag(FLAG_ZERO)){break;}else{return;}
     //case jump_EQU://subtract, check zero
     //case jump_NEQ://subtract, check not zero
   }
@@ -277,11 +277,17 @@ void needJumps(){
     workRAM.push(workRAM.pointer + 1, regSP);
   }
   
-  if(data == 1){//jump/branch
-    workRAM.pointer = workRAM.read(workRAM.pointer);
-  }else{//return
-    workRAM.pointer = workRAM.pop(regSP);
-  }
+  workRAM.pointer = workRAM.readTrue(workRAM.pointer, jumpType_);
+  
+  //if(data == 1){//jump/branch
+  //  workRAM.pointer = workRAM.read(workRAM.pointer);
+  //}else{//return
+  //  workRAM.pointer = workRAM.pop(regSP);
+  //}
+  
+  //switch(jumpType_){
+    
+  //}
 }
 
 void decodeSingles(){

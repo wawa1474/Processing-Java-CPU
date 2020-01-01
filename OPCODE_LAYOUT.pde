@@ -15,6 +15,19 @@ AM = XXXX XXXX XXXI IIII
 12
 IMM  = IMMediate -------------------------------- (imm)
 REG  = REGister --------------------------------- (reg[a])
+IND  = INDirect --------------------------------- (mem[imm])
+REL  = RELative --------------------------------- (PC + imm)
+POP  = POP from stack --------------------------- (stack.pop())
+REG  = REGister --------------------------------- (reg[a])
+REGI = REGister + Imm --------------------------- (reg[a] + imm)
+RGAI = ReGister AutoIncrement ------------------- (reg[a]) reg[a]++
+RGAD = ReGister AutoDecrement ------------------- (reg[a]) reg[a]--
+RGPI = ReGister Pre-Increment ------------------- (++reg[a]) (reg[a])
+RGPD = ReGister Pre-Decrement ------------------- (--reg[a]) (reg[a])
+
+12
+IMM  = IMMediate -------------------------------- (imm)
+REG  = REGister --------------------------------- (reg[a])
 IMM  = IMMediate -------------------------------- (imm)
 PCI  = PC + Imm --------------------------------- (PC + imm)
 REG  = REGister --------------------------------- (reg[a])

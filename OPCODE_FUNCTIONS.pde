@@ -57,6 +57,10 @@ BTS - Test and Set bit and set Carry if true
 BTR - Test and Reset bit and set Carry if true
 BTC - Test and complement(invert) bit and set carry if true
 
+//Bit Manipulation
+bit copy
+bit store
+
 mainRAM.contents[500] = 0x0001;
   bitTest(500, 0);
   println(hex(mainRAM.contents[500]) + ", " + hex(regST));

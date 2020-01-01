@@ -8,6 +8,16 @@ int stackRAMSize = 65536;//?
 
 int regSP = 0;
 
+final int addressingMode_IMM = 0;
+final int addressingMode_REG = 1;
+final int addressingMode_IND = 2;
+final int addressingMode_REL = 3;
+final int addressingMode_POP = 4;
+//final int addressingMode_IMM = 4;
+//final int addressingMode_IMM = 5;
+//final int addressingMode_IMM = 6;
+//final int addressingMode_IMM = 7;
+
 class RAM{//RAM
   char contents[];
   int pointer = 0;//memory pointer
@@ -80,6 +90,17 @@ class RAM{//RAM
   char read(int addr_){
     return contents[addr_];
   }
+  
+  char readTrue(int addr_, int addressingMode_){
+    switch(addressingMode_){
+      case addressingMode_IMM: return read(addr_);
+      case addressingMode_REG: break;
+      case addressingMode_IND: return read(read(addr_));
+      case addressingMode_REL: return read(workRAM.pointer + read(addr_));
+      case addressingMode_POP: return pop(regSP);
+    }
+    return 0;
+  }
 }
 
 //RAM_main.pointer - Program Counter
@@ -103,9 +124,9 @@ BIT    VALUE    HEX    INVERSE   MEANING
 0      1        0001 - FFFE      Carry
 1      2        0002 - FFFD      Zero
 2      4        0004 - FFFB      Borrow
-3      8        0008 - FFF7      Negative
-4      16       0010 - FFEF      Sign
-5      32       0020 - FFDF      Greater
+3      8        0008 - FFF7      Sign
+4      16       0010 - FFEF      Greater
+5      32       0020 - FFDF      NONE
 6      64       0040 - FFBF      NONE
 7      128      0080 - FF7F      NONE
 8      256      0100 - FEFF      NONE
@@ -120,8 +141,7 @@ f      32768    8000 - 7FFF      NONE
 final int FLAG_CARRY = 1;
 final int FLAG_ZERO = 2;
 final int FLAG_BORROW = 4;
-final int FLAG_NEGATIVE = 8;
-final int FLAG_SIGN = 16;
+final int FLAG_SIGN = 8;
 final int FLAG_GREATER = 16;
 
 void updateFlag(int flag_, boolean value_){
@@ -140,7 +160,13 @@ boolean getFlag(int flag_){
 }
 
 void clearFlags(){
-  workRAM.write(regWP + regST, char(0)); 
+  workRAM.write(regWP + regST, char(0));
+}
+
+void updateFlags(boolean carry_, boolean zero_, boolean borrow_, boolean sign_, boolean greater_){
+  int tmp = 0;
+  tmp |= (carry_?FLAG_CARRY:0) | (zero_?FLAG_ZERO:0) | (borrow_?FLAG_BORROW:0) | (sign_?FLAG_SIGN:0) | (greater_?FLAG_GREATER:0);
+  workRAM.write(regWP + regST, char(tmp));
 }
   
 void incPC(){workRAM.pointer++; if(workRAM.pointer >= workRAMSize){workRAM.pointer = 0;}}

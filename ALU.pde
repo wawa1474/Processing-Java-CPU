@@ -225,3 +225,85 @@ void bitTestInvert(int word, int bit){
   updateFlag(FLAG_CARRY, bitTest);
   workRAM.write(word, char(tmp ^ (1 << bit)));
 }
+
+final int ALU_ADD = 0;
+final int ALU_ADC = 1;
+final int ALU_SUB = 2;
+final int ALU_SBC = 3;
+final int ALU_INV = 4;
+final int ALU_AND = 5;
+final int ALU_OR = 6;
+final int ALU_XOR = 7;
+final int ALU_NOT = 8;
+final int ALU_NAND = 9;
+final int ALU_NOR = 10;
+final int ALU_XNOR = 11;
+final int ALU_INC = 12;
+final int ALU_DEC = 13;
+final int ALU_ASL = 14;
+final int ALU_ASR = 15;
+final int ALU_LSL = 16;
+final int ALU_LSR = 17;
+final int ALU_CSL = 18;
+final int ALU_CSR = 19;
+final int ALU_RTL = 20;
+final int ALU_RTR = 21;
+final int ALU_RCL = 22;
+final int ALU_RCR = 23;
+final int ALU_CMP = 24;
+final int ALU_BTT = 25;
+final int ALU_BTS = 26;
+final int ALU_BTR = 27;
+final int ALU_BTI = 28;
+final int ALU_BCP = 29;
+final int ALU_BST = 30;
+
+
+void ALU(int dataBus_, int secondary_, int output_, int function_){
+  int tmpOutput = 0;
+  boolean carry = false;
+  boolean zero = false;
+  boolean borrow = false;
+  boolean sign = false;
+  boolean greater = false;
+  switch(function_){
+    case ALU_ADD:
+    case ALU_ADC:
+    case ALU_SUB:
+    case ALU_SBC:
+    case ALU_INV:
+    case ALU_AND:
+    case ALU_OR:
+    case ALU_XOR:
+    case ALU_NOT:
+    case ALU_NAND:
+    case ALU_NOR:
+    case ALU_XNOR:
+    case ALU_INC:
+    case ALU_DEC:
+    case ALU_ASL:
+    case ALU_ASR:
+    case ALU_LSL:
+    case ALU_LSR:
+    case ALU_CSL:
+    case ALU_CSR:
+    case ALU_RTL:
+    case ALU_RTR:
+    case ALU_RCL:
+    case ALU_RCR:
+    case ALU_CMP:
+    case ALU_BTT:
+    case ALU_BTS:
+    case ALU_BTR:
+    case ALU_BTI:
+    case ALU_BCP:
+    case ALU_BST:
+  }
+  
+  carry = ((tmpOutput & 0xFFFF0000) != 0);
+  zero = ((tmpOutput & 0x0000FFFF) == 0);
+  if(function_ == ALU_SUB || function_ == ALU_SBC){borrow = ((dataBus_ - secondary_) < 0);}
+  sign = ((tmpOutput & 0x00008000) != 0);
+  greater = (dataBus_ > secondary_);
+  updateFlags(carry, zero, borrow, sign, greater);
+}

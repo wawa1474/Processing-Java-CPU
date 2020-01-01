@@ -84,22 +84,22 @@ JP BS - Jump if Bit Set
 JP BC - Jump if Bit Clear
 
 JP ??*/
-final int jump_UNC = 0;//ALWAYS
-final int jump_NEV = 1;//NEVER
-final int jump_C = 2;//if CARRY
-final int jump_NC = 3;//if NOT CARRY
-final int jump_Z = 4;//if ZERO
-final int jump_NZ = 5;//if NOT ZERO
-final int jump_B = 6;//if BORROW
-final int jump_NB = 7;//if NOT BORROW
-final int jump_PLS = 8;//if POSITIVE
-final int jump_MIN = 9;//if NEGEATIVE
-final int jump_GT = 10;//if GREATER THAN
-final int jump_LS = 11;//if LESS THAN
-final int jump_GTE = 12;//if GREATER THAN OR EQUAL
-final int jump_LTE = 13;//if LESS THAN OR EQUAL
-final int jump_NN = 14;//NOT IMPLEMENTED
-final int jump_NNN = 15;//NOT IMPLEMENTED
+final int condition_UNC = 0;//ALWAYS
+final int condition_NEV = 1;//NEVER
+final int condition_C = 2;//if CARRY
+final int condition_NC = 3;//if NOT CARRY
+final int condition_Z = 4;//if ZERO
+final int condition_NZ = 5;//if NOT ZERO
+final int condition_B = 6;//if BORROW
+final int condition_NB = 7;//if NOT BORROW
+final int condition_PLS = 8;//if POSITIVE
+final int condition_MIN = 9;//if NEGEATIVE
+final int condition_GT = 10;//if GREATER THAN
+final int condition_LS = 11;//if LESS THAN
+final int condition_GTE = 12;//if GREATER THAN OR EQUAL
+final int condition_LTE = 13;//if LESS THAN OR EQUAL
+final int condition_NN = 14;//NOT IMPLEMENTED
+final int condition_NNN = 15;//NOT IMPLEMENTED
 
 //Doubles Names
 String opcodeDNames[] = {"SINGLES", "AND", "LOAD", "PRINT", "PRNTA", "ADD", "COPY", "INSC", "INSM", "INSD", "COMPARE", "STORE", "STORE REGISTER",
