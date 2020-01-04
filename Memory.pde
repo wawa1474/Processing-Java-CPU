@@ -142,9 +142,9 @@ final int FLAG_CARRY = 1;
 final int FLAG_ZERO = 2;
 final int FLAG_BORROW = 4;
 final int FLAG_SIGN = 8;
-final int FLAG_GREATER = 16;
+final int FLAG_OVERFLOW = 16;
 
-void updateFlag(int flag_, boolean value_){
+void setFlag(int flag_, boolean value_){
   char tmp = workRAM.read(regWP + regST);
   if(value_){
     tmp |= flag_;
@@ -163,9 +163,9 @@ void clearFlags(){
   workRAM.write(regWP + regST, char(0));
 }
 
-void updateFlags(boolean carry_, boolean zero_, boolean borrow_, boolean sign_, boolean greater_){
+void updateFlags(boolean carry_, boolean zero_, boolean borrow_, boolean sign_, boolean overflow_){
   int tmp = 0;
-  tmp |= (carry_?FLAG_CARRY:0) | (zero_?FLAG_ZERO:0) | (borrow_?FLAG_BORROW:0) | (sign_?FLAG_SIGN:0) | (greater_?FLAG_GREATER:0);
+  tmp |= (carry_?FLAG_CARRY:0) | (zero_?FLAG_ZERO:0) | (borrow_?FLAG_BORROW:0) | (sign_?FLAG_SIGN:0) | (overflow_?FLAG_OVERFLOW:0);
   workRAM.write(regWP + regST, char(tmp));
 }
   

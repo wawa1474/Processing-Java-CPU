@@ -255,8 +255,6 @@ void branch(){
 
 void needJumps(int condition_, int jumpType_){
   switch(condition_){
-    case condition_UNC: break;
-    case condition_NEV: return;
     case condition_C:   if(getFlag(FLAG_CARRY)){break;}else{return;}
     case condition_NC:  if(!getFlag(FLAG_CARRY)){break;}else{return;}
     case condition_Z:   if(getFlag(FLAG_ZERO)){break;}else{return;}
@@ -265,12 +263,16 @@ void needJumps(int condition_, int jumpType_){
     case condition_NB:  if(!getFlag(FLAG_BORROW)){break;}else{return;}
     case condition_PLS: if(!getFlag(FLAG_SIGN)){break;}else{return;}
     case condition_MIN: if(getFlag(FLAG_SIGN)){break;}else{return;}
-    case condition_GT:  if(getFlag(FLAG_GREATER)){break;}else{return;}
-    case condition_LS:  if(!getFlag(FLAG_GREATER)){break;}else{return;}
-    case condition_GTE: if(getFlag(FLAG_GREATER) || getFlag(FLAG_ZERO)){break;}else{return;}
-    case condition_LTE: if(!getFlag(FLAG_GREATER) || getFlag(FLAG_ZERO)){break;}else{return;}
-    //case jump_EQU://subtract, check zero
-    //case jump_NEQ://subtract, check not zero
+    case condition_O:   if(!getFlag(FLAG_OVERFLOW)){break;}else{return;}
+    case condition_NO:  if(getFlag(FLAG_OVERFLOW)){break;}else{return;}
+    case condition_GTE: if(getFlag(FLAG_BORROW) || getFlag(FLAG_ZERO)){break;}else{return;}
+    case condition_LTE: if(!getFlag(FLAG_BORROW) || getFlag(FLAG_ZERO)){break;}else{return;}
+    case condition_SGT: if(getFlag(FLAG_SIGN) == getFlag(FLAG_OVERFLOW)){break;}else{return;}
+    case condition_SLS: if(getFlag(FLAG_SIGN) != getFlag(FLAG_OVERFLOW)){break;}else{return;}
+    case condition_SGTE:if((getFlag(FLAG_SIGN) == getFlag(FLAG_OVERFLOW)) && !getFlag(FLAG_ZERO)){break;}else{return;}
+    case condition_SLTE:if((getFlag(FLAG_SIGN) != getFlag(FLAG_OVERFLOW)) || getFlag(FLAG_ZERO)){break;}else{return;}
+    case condition_UNC: break;
+    case condition_NEV: return;
   }
   
   if(data == 0){//is a subroutine call
@@ -430,7 +432,7 @@ void decodeSingles(){
     
     case KEYINPUT:
       boolean value = (keys[workRAM.read(workRAM.pointer)] == true);
-      updateFlag(FLAG_CARRY, value);
+      setFlag(FLAG_CARRY, value);
       incPC();
       break;
     

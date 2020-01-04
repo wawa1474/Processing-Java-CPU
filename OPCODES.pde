@@ -94,12 +94,14 @@ final int condition_B = 6;//if BORROW
 final int condition_NB = 7;//if NOT BORROW
 final int condition_PLS = 8;//if POSITIVE
 final int condition_MIN = 9;//if NEGEATIVE
-final int condition_GT = 10;//if GREATER THAN
-final int condition_LS = 11;//if LESS THAN
-final int condition_GTE = 12;//if GREATER THAN OR EQUAL
-final int condition_LTE = 13;//if LESS THAN OR EQUAL
-final int condition_NN = 14;//NOT IMPLEMENTED
-final int condition_NNN = 15;//NOT IMPLEMENTED
+final int condition_GTE = 10;//if GREATER THAN OR EQUAL
+final int condition_LTE = 11;//if LESS THAN OR EQUAL
+final int condition_SGT = 12;//if SIGNED GREATER THAN
+final int condition_SLS = 13;//if SIGNED LESS THAN
+final int condition_SGTE = 14;//if SIGNED GREATER THAN OR EQUAL
+final int condition_SLTE = 15;//if SIGNED LESS THAN OR EQUAL
+final int condition_O = 16;//if POSITIVE
+final int condition_NO = 17;//if NEGEATIVE
 
 //Doubles Names
 String opcodeDNames[] = {"SINGLES", "AND", "LOAD", "PRINT", "PRNTA", "ADD", "COPY", "INSC", "INSM", "INSD", "COMPARE", "STORE", "STORE REGISTER",
